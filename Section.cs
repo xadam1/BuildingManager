@@ -112,40 +112,64 @@ namespace BuildingManager
         {
             StringBuilder sb = new StringBuilder();
 
-            if (CardReaders.Count != 0)
+            var cardReaders = new List<Default>();
+            var doors = new List<Default>();
+            var speakers = new List<Default>();
+            var ledPanels = new List<Default>();
+
+            foreach (var device in Devices)
+            {
+                switch (device.Type)
+                {
+                    case Device.CardReader:
+                        cardReaders.Add(device);
+                        break;
+                    case Device.Door:
+                        doors.Add(device);
+                        break;
+                    case Device.Speaker:
+                        speakers.Add(device);
+                        break;
+                    case Device.LedPanel:
+                        ledPanels.Add(device);
+                        break;
+                }
+            }
+
+            if (cardReaders.Count != 0)
             {
                 sb.AppendLine("CardReaders:");
-                foreach (var cardReader in CardReaders)
+                foreach (var cardReader in cardReaders)
                 {
                     sb.Append($"{cardReader.Name} ");
                 }
                 sb.AppendLine("\n");
             }
 
-            if (Doors.Count != 0)
+            if (doors.Count != 0)
             {
                 sb.AppendLine("Doors:");
-                foreach (var door in Doors)
+                foreach (var door in doors)
                 {
                     sb.Append($"{door.Name} ");
                 }
                 sb.AppendLine("\n");
             }
 
-            if (LedPanels.Count != 0)
+            if (ledPanels.Count != 0)
             {
                 sb.AppendLine("LedPanels:");
-                foreach (var ledPanel in LedPanels)
+                foreach (var ledPanel in ledPanels)
                 {
                     sb.Append($"{ledPanel.Name} ");
                 }
                 sb.AppendLine("\n");
             }
 
-            if (Speakers.Count != 0)
+            if (speakers.Count != 0)
             {
                 sb.AppendLine("Speakers:");
-                foreach (var speaker in Speakers)
+                foreach (var speaker in speakers)
                 {
                     sb.Append($"{speaker.Name} ");
                 }
