@@ -11,7 +11,7 @@ namespace BuildingManager
         {
             var section = new Section(name);
             Sections.Add(section);
-            section.DeviceAdded += Helper.OnSectionModified;
+            section.SectionModified += Helper.OnSectionModified;
             BuildingPlan();
         }
 

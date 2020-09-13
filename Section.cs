@@ -9,11 +9,9 @@ namespace BuildingManager
     {
         private string _name;
 
-        public delegate void DeviceAddedEventHandler(Section section, EventArgs args);
-        public event DeviceAddedEventHandler DeviceAdded;
+        public delegate void SectionModifiedEventHandler(Section section, EventArgs args);
+        public event SectionModifiedEventHandler SectionModified;
 
-        public delegate void SectionRenamedEventHandler(Section section, EventArgs args);
-        public event SectionRenamedEventHandler SectionRenamed;
 
         public Section(string name)
         {
@@ -27,7 +25,7 @@ namespace BuildingManager
             {
                 _name = value;
                 // To not display newly created empty Section
-                if (Name != null) { OnSectionRenamed(); }
+                if (Name != null) { OnSectionModified(); }
             }
         }
 
@@ -52,7 +50,7 @@ namespace BuildingManager
                     Devices.Add(new LedPanel(name));
                     break;
             }
-            OnDeviceAdded();
+            OnSectionModified();
         }
 
         // Returns actual device object, null if None matched the name
@@ -136,14 +134,9 @@ namespace BuildingManager
         }
 
 
-        protected void OnDeviceAdded()
+        protected void OnSectionModified()
         {
-            DeviceAdded?.Invoke(this, EventArgs.Empty);
-        }
-
-        protected void OnSectionRenamed()
-        {
-            SectionRenamed?.Invoke(this, EventArgs.Empty);
+            SectionModified?.Invoke(this, EventArgs.Empty);
         }
     }
 }
