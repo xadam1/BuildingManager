@@ -5,13 +5,12 @@ namespace BuildingManager
     public class Device
     {
         public delegate void OnDeviceModifiedEventHandler(Device device, EventArgs args);
-
-        public event OnDeviceModifiedEventHandler DeviceRenamed;
+        public event OnDeviceModifiedEventHandler DeviceModified;
 
         public Device(DeviceType type, string name)
         {
             Type = type;
-            Name = name;
+            Name = name;    
         }
 
         public DeviceType Type { get; }
@@ -24,17 +23,16 @@ namespace BuildingManager
         {
             return $"Type:\t{Type}\nName:\t{Name}\nID:\t{Id}";
         }
-
-
-        public virtual void Rename(string newName)
+        
+        public void Rename(string newName)
         {
             Name = newName;
-            OnDeviceRenamed();
+            OnDeviceModified();
         }
-
-        protected virtual void OnDeviceRenamed()
+        
+        protected void OnDeviceModified()
         {
-            DeviceRenamed?.Invoke(this, EventArgs.Empty);
+            DeviceModified?.Invoke(this, EventArgs.Empty);
         }
     }
 }
