@@ -25,76 +25,30 @@ namespace BuildingManager
             get => _name;
             set
             {
-                var isRenaming = Name != null;
                 _name = value;
-
                 // To not display newly created empty Section
-                if (isRenaming) { OnSectionRenamed(); }
+                if (Name != null) { OnSectionRenamed(); }
             }
         }
 
-        /* TODO
-        // Each section has it's own Collection of devices
-        // I found this the easiest way, since we only deal with 4 different device types
-        public List<CardReader> CardReaders { get; set; } = new List<CardReader>();
-        public List<Door> Doors { get; set; } = new List<Door>();
-        public List<LedPanel> LedPanels { get; set; } = new List<LedPanel>();
-        public List<Speaker> Speakers { get; set; } = new List<Speaker>();
-        */
+        public List<Device> Devices { get; set; } = new List<Device>();
 
-        public List<Default> Devices { get; set; } = new List<Default>();
 
-        /* TODO
-        public void AddDevice(Device device, string name)
-        {
-            switch (device)
-            {
-                case Device.Door:
-                    var door = new Door(name);
-                    door.DoorModified += Helper.OnDeviceModified;
-                    door.DeviceRenamed += Helper.OnDeviceModified;
-                    Doors.Add(door);
-                    break;
-
-                case Device.CardReader:
-                    var reader = new CardReader(name);
-                    reader.CardReaderModified += Helper.OnDeviceModified;
-                    reader.DeviceRenamed += Helper.OnDeviceModified;
-                    CardReaders.Add(reader);
-                    break;
-
-                case Device.Speaker:
-                    var speaker = new Speaker(name);
-                    speaker.SpeakerModified += Helper.OnDeviceModified;
-                    speaker.DeviceRenamed += Helper.OnDeviceModified;
-                    Speakers.Add(speaker);
-                    break;
-
-                case Device.LedPanel:
-                    var panel = new LedPanel(name);
-                    panel.LedPanelModified += Helper.OnDeviceModified;
-                    panel.DeviceRenamed += Helper.OnDeviceModified;
-                    LedPanels.Add(panel);
-                    break;
-            }
-            OnDeviceAdded();
-        }
-        */
-
-        public void AddDevice(Device deviceType, string name)
+        // TODO add events that something was added
+        public void AddDevice(DeviceType deviceType, string name)
         {
             switch (deviceType)
             {
-                case Device.Door:
+                case DeviceType.Door:
                     Devices.Add(new Door(name));
                     break;
-                case Device.Speaker:
+                case DeviceType.Speaker:
                     Devices.Add(new Speaker(name));
                     break;
-                case Device.CardReader:
+                case DeviceType.CardReader:
                     Devices.Add(new CardReader(name));
                     break;
-                case Device.LedPanel:
+                case DeviceType.LedPanel:
                     Devices.Add(new LedPanel(name));
                     break;
             }
@@ -102,9 +56,11 @@ namespace BuildingManager
         }
 
         // Returns actual device object, null if None matched the name
-        public Default FindDeviceByName(string name) => Devices.SingleOrDefault(x => x.Name == name);
+        public Device FindDeviceByName(string name) => Devices
+            .SingleOrDefault(x => x.Name == name);
 
-        public Default FindDeviceById(int id) => Devices.SingleOrDefault(x => x.Id == id);
+        public Device FindDeviceById(int id) => Devices
+            .SingleOrDefault(x => x.Id == id);
 
         // Returns string of all devices in this section. Divided into categories
         // Category is omitted if no device is in given category
@@ -112,25 +68,25 @@ namespace BuildingManager
         {
             StringBuilder sb = new StringBuilder();
 
-            var cardReaders = new List<Default>();
-            var doors = new List<Default>();
-            var speakers = new List<Default>();
-            var ledPanels = new List<Default>();
+            var cardReaders = new List<Device>();
+            var doors = new List<Device>();
+            var speakers = new List<Device>();
+            var ledPanels = new List<Device>();
 
             foreach (var device in Devices)
             {
                 switch (device.Type)
                 {
-                    case Device.CardReader:
+                    case DeviceType.CardReader:
                         cardReaders.Add(device);
                         break;
-                    case Device.Door:
+                    case DeviceType.Door:
                         doors.Add(device);
                         break;
-                    case Device.Speaker:
+                    case DeviceType.Speaker:
                         speakers.Add(device);
                         break;
-                    case Device.LedPanel:
+                    case DeviceType.LedPanel:
                         ledPanels.Add(device);
                         break;
                 }
@@ -180,12 +136,12 @@ namespace BuildingManager
         }
 
 
-        protected virtual void OnDeviceAdded()
+        protected void OnDeviceAdded()
         {
             DeviceAdded?.Invoke(this, EventArgs.Empty);
         }
 
-        protected virtual void OnSectionRenamed()
+        protected void OnSectionRenamed()
         {
             SectionRenamed?.Invoke(this, EventArgs.Empty);
         }

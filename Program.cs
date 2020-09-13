@@ -7,7 +7,7 @@ namespace BuildingManager
     internal class Program
     {
         private static Section _selectedSection;
-        private static Default _selectedDevice;
+        private static Device _selectedDevice;
 
         private static readonly Building Building = new Building();
 
@@ -95,7 +95,7 @@ namespace BuildingManager
             // MOVE DEVICE TO ANOTHER LOCATION
             Console.WriteLine("Moving 'Subwoofer' from 'SectionA' -> 'SectionB'");
             _selectedSection = Building.Sections.SingleOrDefault(sec => sec.Name == "SectionA");
-            _selectedDevice = _selectedSection?.FindDeviceByName(Device.Speaker, "Subwoofer");
+            _selectedDevice = _selectedSection?.FindDeviceByName(DeviceType.Speaker, "Subwoofer");
             MoveDeviceToAnotherSection(Building.Sections.SingleOrDefault(sec => sec.Name == "SectionB"));
 
             // RENAME SECTION
@@ -104,13 +104,13 @@ namespace BuildingManager
 
             // Change Access Number
             Console.WriteLine("Changing AccessNumber at 'MainDoorReader' -> 'A01234DE7FFF'");
-            _selectedDevice = _selectedSection.FindDeviceByName(Device.CardReader, "MainDoorReader");
+            _selectedDevice = _selectedSection.FindDeviceByName(DeviceType.CardReader, "MainDoorReader");
             ((CardReader)_selectedDevice).AccessCardNumber = "A01234DE7FFF";
 
             // Delete device
             Console.WriteLine("Deleting 'RareSpeaker' from 'MainSection'");
             _selectedSection = Building.Sections.SingleOrDefault(sec => sec.Name == "MainSection");
-            _selectedDevice = _selectedSection.FindDeviceByName(Device.Speaker, "RareSpeaker");
+            _selectedDevice = _selectedSection.FindDeviceByName(DeviceType.Speaker, "RareSpeaker");
             RemoveSelectedDeviceFromSelectedSection();
 
             Console.WriteLine("INITIALIZATION DONE!\n\n");
@@ -242,7 +242,7 @@ namespace BuildingManager
 
                     // LEDPANEL MANIPULATION
                     case "change text":
-                        if (CheckIfSelectedDeviceIsMatch(Device.LedPanel))
+                        if (CheckIfSelectedDeviceIsMatch(DeviceType.LedPanel))
                         {
                             Console.WriteLine("Enter new text...");
                             (_selectedDevice as LedPanel).Message = Console.ReadLine();
@@ -253,7 +253,7 @@ namespace BuildingManager
                     // DOOR MANIPULATION
                     case "open door":
                     case "open":
-                        if (!CheckIfSelectedDeviceIsNull() && CheckIfSelectedDeviceIsMatch(Device.Door))
+                        if (!CheckIfSelectedDeviceIsNull() && CheckIfSelectedDeviceIsMatch(DeviceType.Door))
                         {
                             (_selectedDevice as Door).OpenDoor();
                         }
@@ -261,7 +261,7 @@ namespace BuildingManager
 
                     case "lock door":
                     case "lock":
-                        if (!CheckIfSelectedDeviceIsNull() && CheckIfSelectedDeviceIsMatch(Device.Door))
+                        if (!CheckIfSelectedDeviceIsNull() && CheckIfSelectedDeviceIsMatch(DeviceType.Door))
                         {
                             (_selectedDevice as Door).LockDoor();
                         }
@@ -270,7 +270,7 @@ namespace BuildingManager
                     case "opentoolong door":
                     case "opentoolong":
                     case "toolong":
-                        if (!CheckIfSelectedDeviceIsNull() && CheckIfSelectedDeviceIsMatch(Device.Door))
+                        if (!CheckIfSelectedDeviceIsNull() && CheckIfSelectedDeviceIsMatch(DeviceType.Door))
                         {
                             (_selectedDevice as Door).SetOpenForTooLong();
                         }
@@ -280,7 +280,7 @@ namespace BuildingManager
                     case "door openforcibly":
                     case "openforcibly":
                     case "forcibly":
-                        if (!CheckIfSelectedDeviceIsNull() && CheckIfSelectedDeviceIsMatch(Device.Door))
+                        if (!CheckIfSelectedDeviceIsNull() && CheckIfSelectedDeviceIsMatch(DeviceType.Door))
                         {
                             (_selectedDevice as Door).SetOpenedForcibly();
                         }
@@ -290,7 +290,7 @@ namespace BuildingManager
                     // SPEAKER MANIPULATION
                     case "volume":
                     case "change volume":
-                        if (CheckIfSelectedDeviceIsNull() || !CheckIfSelectedDeviceIsMatch(Device.Speaker)) { continue; }
+                        if (CheckIfSelectedDeviceIsNull() || !CheckIfSelectedDeviceIsMatch(DeviceType.Speaker)) { continue; }
 
                         Console.WriteLine("Enter new volume (Number between 0 and 100)...");
                         if (!float.TryParse(Console.ReadLine(), out var parsedInput))
@@ -303,7 +303,7 @@ namespace BuildingManager
 
                     case "sound":
                     case "change sound":
-                        if (CheckIfSelectedDeviceIsNull() || !CheckIfSelectedDeviceIsMatch(Device.Speaker)) { continue; }
+                        if (CheckIfSelectedDeviceIsNull() || !CheckIfSelectedDeviceIsMatch(DeviceType.Speaker)) { continue; }
 
                         Console.WriteLine($"What do you want {_selectedDevice.Name} to play? (Alarm/Music/None)");
                         switch (Console.ReadLine())
@@ -333,7 +333,7 @@ namespace BuildingManager
                     // CARD MANIPULATION
                     case "access":
                     case "change access":
-                        if (!CheckIfSelectedDeviceIsMatch(Device.CardReader)) { continue; }
+                        if (!CheckIfSelectedDeviceIsMatch(DeviceType.CardReader)) { continue; }
 
                         Console.WriteLine("Please enter new card number...");
                         (_selectedDevice as CardReader).AccessCardNumber = Console.ReadLine();
@@ -365,10 +365,10 @@ namespace BuildingManager
             return true;
         }
 
-        private static bool CheckIfSelectedDeviceIsMatch(Device device)
+        private static bool CheckIfSelectedDeviceIsMatch(DeviceType deviceType)
         {
-            if (_selectedDevice.Type == device) return true;
-            Helper.PrintError($"You must select {device} to modify it.");
+            if (_selectedDevice.Type == deviceType) return true;
+            Helper.PrintError($"You must select {deviceType} to modify it.");
             return false;
         }
 
@@ -382,22 +382,22 @@ namespace BuildingManager
         {
             switch (_selectedDevice.Type)
             {
-                case Device.Door:
+                case DeviceType.Door:
                     targetSection.Doors.Add(_selectedDevice as Door);
                     _selectedSection.Doors.Remove(_selectedDevice as Door);
                     break;
 
-                case Device.Speaker:
+                case DeviceType.Speaker:
                     targetSection.Speakers.Add(_selectedDevice as Speaker);
                     _selectedSection.Speakers.Remove(_selectedDevice as Speaker);
                     break;
 
-                case Device.LedPanel:
+                case DeviceType.LedPanel:
                     targetSection.LedPanels.Add(_selectedDevice as LedPanel);
                     _selectedSection.LedPanels.Remove(_selectedDevice as LedPanel);
                     break;
 
-                case Device.CardReader:
+                case DeviceType.CardReader:
                     targetSection.CardReaders.Add(_selectedDevice as CardReader);
                     _selectedSection.CardReaders.Remove(_selectedDevice as CardReader);
                     break;
@@ -409,19 +409,19 @@ namespace BuildingManager
         {
             switch (_selectedDevice.Type)
             {
-                case Device.Door:
+                case DeviceType.Door:
                     _selectedSection.Doors.Remove(_selectedDevice as Door);
                     break;
 
-                case Device.Speaker:
+                case DeviceType.Speaker:
                     _selectedSection.Speakers.Remove(_selectedDevice as Speaker);
                     break;
 
-                case Device.LedPanel:
+                case DeviceType.LedPanel:
                     _selectedSection.LedPanels.Remove(_selectedDevice as LedPanel);
                     break;
 
-                case Device.CardReader:
+                case DeviceType.CardReader:
                     _selectedSection.CardReaders.Remove(_selectedDevice as CardReader);
                     break;
             }
@@ -433,7 +433,7 @@ namespace BuildingManager
 
         #region GetMethods
         // Returns Device object or null if not found
-        private static Default GetDevice()
+        private static Device GetDevice()
         {
             var (type, name) = GetDeviceTypeAndName();
             return _selectedSection.FindDeviceByName(type, name);
@@ -441,7 +441,7 @@ namespace BuildingManager
 
         // TODO CHECK WRONG INPUT
         // Asks user to type DeviceType and name -> parses the type into correct enum, returns tuple
-        private static (Device, string) GetDeviceTypeAndName()
+        private static (DeviceType, string) GetDeviceTypeAndName()
         {
             Console.WriteLine("What device (CardReader/Door/LedPanel/Speaker) and name? Ex.: 'Door MainDoor'");
             var ln = Console.ReadLine()?.Trim().Split(' ');
@@ -451,7 +451,7 @@ namespace BuildingManager
                 name = ln[1];
             }
 
-            Enum.TryParse(ln?[0], out Device type);
+            Enum.TryParse(ln?[0], out DeviceType type);
             return (type, name);
         }
 

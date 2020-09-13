@@ -2,14 +2,14 @@
 
 namespace BuildingManager
 {
-    public class Speaker : Default
+    public class Speaker : Device
     {
         private float _volume = 50f;
 
         public event OnDeviceModifiedEventHandler SpeakerModified; 
 
         
-        public Speaker(string name) : base(Device.Speaker, name ?? "Speaker")
+        public Speaker(string name) : base(DeviceType.Speaker, name ?? "Speaker")
         {
         }
 

@@ -2,9 +2,9 @@
 
 namespace BuildingManager
 {
-    public class Door : Default
+    public class Door : Device
     {
-        public Door(string name) : base(Device.Door, name ?? "Door")
+        public Door(string name) : base(DeviceType.Door, name ?? "Door")
         {
         }
 

@@ -6,20 +6,20 @@ namespace BuildingManager
     {
         private static int _idCounter = 0;
 
-        public static void OnDeviceModified(Default device, EventArgs e)
+        public static void OnDeviceModified(Device device, EventArgs e)
         {
             switch (device.Type)
             {
-                case Device.Door:
+                case DeviceType.Door:
                     PrintDeviceInfo(device as Door);
                     break;
-                case Device.Speaker:
+                case DeviceType.Speaker:
                     PrintDeviceInfo(device as Speaker);
                     break;
-                case Device.LedPanel:
+                case DeviceType.LedPanel:
                     PrintDeviceInfo(device as LedPanel);
                     break;
-                case Device.CardReader:
+                case DeviceType.CardReader:
                     PrintDeviceInfo(device as CardReader);
                     break;
             }
@@ -53,7 +53,7 @@ namespace BuildingManager
             Console.ResetColor();
         }
 
-        public static void PrintDeviceInfo(Default device)
+        public static void PrintDeviceInfo(Device device)
         {
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"\n---------- {device.Type} Info ----------");
@@ -139,7 +139,7 @@ namespace BuildingManager
         }
 
 
-        public static void DeviceSelectedMessage(Default device)
+        public static void DeviceSelectedMessage(Device device)
         {
             Console.BackgroundColor = ConsoleColor.DarkGray;
             Console.WriteLine($"Device selected: {device.Name}");
@@ -154,7 +154,7 @@ namespace BuildingManager
         }
 
 
-        public static void PrintDeviceDeletedFromSectionMessage(Default device, Section section)
+        public static void PrintDeviceDeletedFromSectionMessage(Device device, Section section)
         {
             Console.BackgroundColor = ConsoleColor.DarkYellow;
             Console.ForegroundColor = ConsoleColor.Black;
@@ -171,7 +171,7 @@ namespace BuildingManager
             Console.ResetColor();
         }
 
-        public static void PrintDeviceMoved(Default device, Section previousSection, Section newSection)
+        public static void PrintDeviceMoved(Device device, Section previousSection, Section newSection)
         {
             Console.BackgroundColor = ConsoleColor.DarkYellow;
             Console.ForegroundColor = ConsoleColor.Black;

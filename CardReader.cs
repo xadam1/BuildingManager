@@ -3,11 +3,11 @@ using System.Text.RegularExpressions;
 
 namespace BuildingManager
 {
-    public class CardReader : Default
+    public class CardReader : Device
     {
         private string _accessCardNumber;
 
-        public CardReader(string name) : base(Device.CardReader, name ?? "CardReader")
+        public CardReader(string name) : base(DeviceType.CardReader, name ?? "CardReader")
         {
         }
 

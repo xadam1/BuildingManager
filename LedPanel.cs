@@ -3,11 +3,11 @@ using System.Runtime.CompilerServices;
 
 namespace BuildingManager
 {
-    public class LedPanel : Default
+    public class LedPanel : Device
     {
         private string _message;
 
-        public LedPanel(string name) : base(Device.LedPanel, name ?? "LedPanel")
+        public LedPanel(string name) : base(DeviceType.LedPanel, name ?? "LedPanel")
         {
         }
 

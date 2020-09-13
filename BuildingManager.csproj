@@ -45,8 +45,8 @@
   <ItemGroup>
     <Compile Include="Building.cs" />
     <Compile Include="CardReader.cs" />
-    <Compile Include="Default.cs" />
     <Compile Include="Device.cs" />
+    <Compile Include="DeviceType.cs" />
     <Compile Include="Door.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="LedPanel.cs" />
