@@ -7,10 +7,7 @@ namespace BuildingManager
         public Door(string name) : base(DeviceType.Door, name ?? "Door")
         {
         }
-
-        public event OnDeviceModifiedEventHandler DoorModified;
-
-
+        
         public override string GetCurrentState()
         {
             return base.GetCurrentState() + $"\nState: {State}";
@@ -31,25 +28,25 @@ namespace BuildingManager
         public void OpenDoor()
         {
             State = PossibleState.Open;
-            OnDoorModified();
+            OnDeviceModified();
         }
 
         public void LockDoor()
         {
             State = PossibleState.Locked;
-            OnDoorModified();
+            OnDeviceModified();
         }
 
         public void SetOpenForTooLong()
         {
             State = PossibleState.OpenForTooLong;
-            OnDoorModified();
+            OnDeviceModified();
         }
 
         public void SetOpenedForcibly()
         {
             State = PossibleState.OpenedForcibly;
-            OnDoorModified();
+            OnDeviceModified();
         }
 
 
@@ -59,11 +56,6 @@ namespace BuildingManager
             Open,
             OpenForTooLong,
             OpenedForcibly
-        }
-
-        protected virtual void OnDoorModified()
-        {
-            DoorModified?.Invoke(this, EventArgs.Empty);
         }
     }
 }

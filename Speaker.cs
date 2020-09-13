@@ -6,9 +6,6 @@ namespace BuildingManager
     {
         private float _volume = 50f;
 
-        public event OnDeviceModifiedEventHandler SpeakerModified; 
-
-        
         public Speaker(string name) : base(DeviceType.Speaker, name ?? "Speaker")
         {
         }
@@ -26,7 +23,7 @@ namespace BuildingManager
                     return;
                 }
                 _volume = value;
-                OnSpeakerModified();
+                OnDeviceModified();
             }
         }
 
@@ -34,19 +31,19 @@ namespace BuildingManager
         public void PlayMusic()
         {
             Sound = SoundOptions.Music;
-            OnSpeakerModified();
+            OnDeviceModified();
         }
 
         public void PlayAlarm()
         {
             Sound = SoundOptions.Alarm;
-            OnSpeakerModified();
+            OnDeviceModified();
         }
 
         public void StopPlaying()
         {
             Sound = SoundOptions.None;
-            OnSpeakerModified();
+            OnDeviceModified();
         }
 
         public override string GetCurrentState()
@@ -59,11 +56,6 @@ namespace BuildingManager
             None,
             Music,
             Alarm
-        }
-
-        protected virtual void OnSpeakerModified()
-        {
-            SpeakerModified?.Invoke(this, EventArgs.Empty);
         }
     }
 }
