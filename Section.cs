@@ -33,13 +33,18 @@ namespace BuildingManager
             }
         }
 
+        /* TODO
         // Each section has it's own Collection of devices
         // I found this the easiest way, since we only deal with 4 different device types
         public List<CardReader> CardReaders { get; set; } = new List<CardReader>();
         public List<Door> Doors { get; set; } = new List<Door>();
         public List<LedPanel> LedPanels { get; set; } = new List<LedPanel>();
         public List<Speaker> Speakers { get; set; } = new List<Speaker>();
+        */
 
+        public List<Default> Devices { get; set; } = new List<Default>();
+
+        /* TODO
         public void AddDevice(Device device, string name)
         {
             switch (device)
@@ -74,26 +79,32 @@ namespace BuildingManager
             }
             OnDeviceAdded();
         }
+        */
 
-        // Returns actual device object, null if None matched the name
-        public Default FindDeviceByName(Device type, string name)
+        public void AddDevice(Device deviceType, string name)
         {
-            switch (type)
+            switch (deviceType)
             {
                 case Device.Door:
-                    return Doors.SingleOrDefault(x => x.Name == name);
-
-                case Device.CardReader:
-                    return CardReaders.SingleOrDefault(x => x.Name == name);
-
+                    Devices.Add(new Door(name));
+                    break;
                 case Device.Speaker:
-                    return Speakers.SingleOrDefault(x => x.Name == name);
-
+                    Devices.Add(new Speaker(name));
+                    break;
+                case Device.CardReader:
+                    Devices.Add(new CardReader(name));
+                    break;
                 case Device.LedPanel:
-                    return LedPanels.SingleOrDefault(x => x.Name == name);
+                    Devices.Add(new LedPanel(name));
+                    break;
             }
-            return null;
+            OnDeviceAdded();
         }
+
+        // Returns actual device object, null if None matched the name
+        public Default FindDeviceByName(string name) => Devices.SingleOrDefault(x => x.Name == name);
+
+        public Default FindDeviceById(int id) => Devices.SingleOrDefault(x => x.Id == id);
 
         // Returns string of all devices in this section. Divided into categories
         // Category is omitted if no device is in given category
