@@ -18,6 +18,7 @@ namespace BuildingManager
             {
                 if (!ValidateCardNumber(value))
                 {
+                    // TODO Event based error
                     Helper.PrintError("Card Number is not valid!");
                     return;
                 }
@@ -33,12 +34,10 @@ namespace BuildingManager
             return (cardNumber.Length % 2 == 0 && cardNumber.Length < 16)
                    && Regex.IsMatch(cardNumber.ToUpper(), @"^[0-9A-F]+$");
         }
-
-
+        
         private static string ReverseBytesAndPad(string input)
         {
             var sb = new StringBuilder();
-
             for (var i = input.Length - 1; i > 0; i -= 2)
             {
                 sb.Append(input[i - 1]);
@@ -48,7 +47,7 @@ namespace BuildingManager
             return sb.ToString().PadLeft(16, '0');
         }
 
-        public override string GetCurrentState() => 
+        public override string GetCurrentState() =>
             base.GetCurrentState() + $"\nAccess Number: {AccessCardNumber}";
     }
 }

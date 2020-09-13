@@ -15,7 +15,7 @@ namespace BuildingManager
         #region Initialization
         // Simply populate building with some data
         private static void PopulateBuilding()
-        {
+        {/*
             // SectionA
             var sectionA = new Section("SectionA");
             sectionA.DeviceAdded += Helper.OnSectionModified;
@@ -87,6 +87,7 @@ namespace BuildingManager
 
             Building.Sections.Add(sectionA);
             Building.Sections.Add(sectionB);
+            */
         }
 
         // Does some initial moving, renaming, deleting, etc...
@@ -94,9 +95,9 @@ namespace BuildingManager
         {
             // MOVE DEVICE TO ANOTHER LOCATION
             Console.WriteLine("Moving 'Subwoofer' from 'SectionA' -> 'SectionB'");
-            _selectedSection = Building.Sections.SingleOrDefault(sec => sec.Name == "SectionA");
-            _selectedDevice = _selectedSection?.FindDeviceByName(DeviceType.Speaker, "Subwoofer");
-            MoveDeviceToAnotherSection(Building.Sections.SingleOrDefault(sec => sec.Name == "SectionB"));
+            _selectedSection = Building.Sections.Single(sec => sec.Name == "SectionA");
+            _selectedDevice = _selectedSection.FindDeviceByName("Subwoofer");
+            MoveDeviceToAnotherSection(Building.Sections.Single(sec => sec.Name == "SectionB"));
 
             // RENAME SECTION
             Console.WriteLine("Renaming section 'SectionA' -> 'MainSection'");
@@ -104,13 +105,13 @@ namespace BuildingManager
 
             // Change Access Number
             Console.WriteLine("Changing AccessNumber at 'MainDoorReader' -> 'A01234DE7FFF'");
-            _selectedDevice = _selectedSection.FindDeviceByName(DeviceType.CardReader, "MainDoorReader");
+            _selectedDevice = _selectedSection.FindDeviceByName("MainDoorReader");
             ((CardReader)_selectedDevice).AccessCardNumber = "A01234DE7FFF";
 
             // Delete device
             Console.WriteLine("Deleting 'RareSpeaker' from 'MainSection'");
-            _selectedSection = Building.Sections.SingleOrDefault(sec => sec.Name == "MainSection");
-            _selectedDevice = _selectedSection.FindDeviceByName(DeviceType.Speaker, "RareSpeaker");
+            _selectedSection = Building.Sections.Single(sec => sec.Name == "MainSection");
+            _selectedDevice = _selectedSection.FindDeviceByName("RareSpeaker");
             RemoveSelectedDeviceFromSelectedSection();
 
             Console.WriteLine("INITIALIZATION DONE!\n\n");
@@ -220,13 +221,13 @@ namespace BuildingManager
                     case "device info":
                         if (!CheckIfSelectedDeviceIsNull()) { Helper.PrintDeviceInfo(_selectedDevice); }
                         break;
-                        
+
                     case "delete device":
                     case "delete":
                         if (CheckIfSelectedSectionIsNull() || CheckIfSelectedDeviceIsNull()) { continue; }
                         RemoveSelectedDeviceFromSelectedSection();
                         break;
-                        
+
                     case "move device":
                     case "move":
                         if (CheckIfSelectedSectionIsNull() || CheckIfSelectedDeviceIsNull()) { continue; }

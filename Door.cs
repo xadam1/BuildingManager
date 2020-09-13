@@ -7,55 +7,71 @@ namespace BuildingManager
         public Door(string name) : base(DeviceType.Door, name ?? "Door")
         {
         }
-        
+
         public override string GetCurrentState()
         {
             return base.GetCurrentState() + $"\nState: {State}";
         }
 
-        public PossibleState State { get; private set; } = PossibleState.Locked;
 
-        public bool Locked => State == PossibleState.Locked;
+        public PossibleState State { get; set; } = PossibleState.Locked;
 
-        public bool Open => State == PossibleState.Open;
-
-        public bool OpenForTooLong => State == PossibleState.OpenForTooLong;
-
-        public bool OpenedForcibly => State == PossibleState.OpenedForcibly;
-
-
-        // Methods to change Door's state
-        public void OpenDoor()
+        public bool Open
         {
-            State = PossibleState.Open;
-            OnDeviceModified();
+            get => State == PossibleState.Open;
+            set
+            {
+                if (value)
+                {
+                    State |= PossibleState.Open;
+                }
+            }
         }
 
-        public void LockDoor()
+        public bool OpenForTooLong
         {
-            State = PossibleState.Locked;
-            OnDeviceModified();
+            get => State == PossibleState.OpenForTooLong;
+            set
+            {
+                if (value)
+                {
+                    State |= PossibleState.OpenForTooLong;
+                }
+            }
         }
 
-        public void SetOpenForTooLong()
+        public bool OpenedForcibly
         {
-            State = PossibleState.OpenForTooLong;
-            OnDeviceModified();
+            get => State == PossibleState.OpenedForcibly;
+            set
+            {
+                if (value)
+                {
+                    State |= PossibleState.OpenedForcibly;
+                }
+            }
         }
 
-        public void SetOpenedForcibly()
+        public bool Locked
         {
-            State = PossibleState.OpenedForcibly;
-            OnDeviceModified();
+            get => State == PossibleState.Locked;
+            set
+            {
+                if (value)
+                {
+                    State |= PossibleState.Locked;
+                }
+            }
         }
+        
 
-
+        [Flags]
         public enum PossibleState
         {
-            Locked,
-            Open,
-            OpenForTooLong,
-            OpenedForcibly
+            Locked = 1,
+            Open = 2,
+            OpenForTooLong = 4,
+            OpenedForcibly = 8
         }
     }
 }

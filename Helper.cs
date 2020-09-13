@@ -4,8 +4,9 @@ namespace BuildingManager
 {
     public static class Helper
     {
-        private static int _idCounter = 0;
+        private static int _idCounter;
 
+        #region EventHandlers
         public static void OnDeviceModified(Device device, EventArgs e)
         {
             switch (device.Type)
@@ -24,18 +25,13 @@ namespace BuildingManager
                     break;
             }
         }
-
-        public static void OnDeviceAdded(Section section, EventArgs e)
-        {
-            PrintSectionInfo(section);
-        }
-
+        
         public static void OnSectionModified(Section section, EventArgs e)
         {
             PrintSectionInfo(section);
         }
+        #endregion
         
-
         public static int CalculateNewId() => _idCounter++;
 
         public static void Greetings()
