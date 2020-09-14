@@ -14,6 +14,10 @@ namespace BuildingManager.Devices
         public Device(DeviceTypes type, string name)
         {
             Type = type;
+            if (name is null)
+            {
+                name = type.ToString();
+            }
             Name = name;    
         }
 

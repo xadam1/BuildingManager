@@ -153,23 +153,73 @@ namespace BuildingManager
                         Building.BuildingPlan();
                         break;
 
+                    /*
+                                        case "select section":
+                                        case "section select":
+                                        case "ss":
+                                        case "SS":
+                                            _selectedSection = GetSection();
+                                            if (CheckIfSelectedSectionIsNull()) { continue; }
 
-                    case "select section":
-                    case "section select":
-                    case "ss":
-                    case "SS":
-                        _selectedSection = GetSection();
-                        if (CheckIfSelectedSectionIsNull()) { continue; }
+                                            Helper.SectionSelectedMessage(_selectedSection);
+                                            break;
+                    */
 
-                        Helper.SectionSelectedMessage(_selectedSection);
-                        break;
-
-
-                    case "new":
-                        if (commands?[1] == "device" || commands?[1] == "Device")
+                    // Adding Sections and Devices
+                    case "add":
+                        switch (commands[1])
                         {
-                            // Add new device
+                            case "device":
+                            case "Device":
+                                if (commands.Length < 4)
+                                {
+                                    Helper.PrintError(
+                                        "Specify section, device type and name[optional]\nEx.: 'new device MainSection Speaker [Subwoofer]'");
+                                }
 
+                                var sectionName = commands[2];
+                                var targetSection = GetSectionByName(sectionName);
+                                if (targetSection is null)
+                                {
+                                    Helper.PrintError("Target Section not found.");
+                                    continue;
+                                }
+                                var deviceType = commands[3];
+                                
+                                string deviceName = null;
+                                if (commands.Length == 5)
+                                {
+                                    deviceName = commands[4];
+                                }
+
+                                if (Enum.TryParse(deviceType, out DeviceTypes type))
+                                {
+                                    targetSection.AddDevice(type, deviceName);
+                                    continue;
+                                }
+                                Helper.PrintError("Device type not recognized.");
+                                break;
+
+
+                            case "section":
+                            case "Section":
+                                if (commands.Length < 3)
+                                {
+                                    Helper.PrintError("Specify section name, ex.: 'new section MainSection'");
+                                }
+                                var newSectionName = commands[2];
+                                if (!CheckSectionNameAvailability(newSectionName))
+                                {
+                                    Helper.PrintError("Sorry, this section already exists.");
+                                    continue;
+                                }
+                                Building.AddSection(newSectionName);
+                                break;
+
+
+                            default:
+                                Helper.PrintError("Wrong Add Command Syntax.");
+                                break;
                         }
                         break;
                 }
@@ -524,6 +574,12 @@ namespace BuildingManager
             var section = Console.ReadLine();
             return Building.Sections.FirstOrDefault(x => x.Name == section);
         }
+
+        private static Section GetSectionByName(string sectionName)
+        {
+            return Building.Sections.FirstOrDefault(section => section.Name == sectionName);
+        }
+
         #endregion
     }
 }
