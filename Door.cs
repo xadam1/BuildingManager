@@ -14,59 +14,60 @@ namespace BuildingManager
         }
 
 
-        public PossibleState State { get; set; } = PossibleState.Locked;
+        public DoorStates State { get; set; } = DoorStates.Locked;
+
 
         public bool Open
         {
-            get => State == PossibleState.Open;
+            get => (State & DoorStates.Open) == DoorStates.Open;
             set
             {
                 if (value)
                 {
-                    State |= PossibleState.Open;
-                }
-            }
-        }
-
-        public bool OpenForTooLong
-        {
-            get => State == PossibleState.OpenForTooLong;
-            set
-            {
-                if (value)
-                {
-                    State |= PossibleState.OpenForTooLong;
-                }
-            }
-        }
-
-        public bool OpenedForcibly
-        {
-            get => State == PossibleState.OpenedForcibly;
-            set
-            {
-                if (value)
-                {
-                    State |= PossibleState.OpenedForcibly;
+                    State |= DoorStates.Open;
                 }
             }
         }
 
         public bool Locked
         {
-            get => State == PossibleState.Locked;
+            get => (State & DoorStates.Locked) == DoorStates.Locked;
             set
             {
                 if (value)
                 {
-                    State |= PossibleState.Locked;
+                    State |= DoorStates.Locked;
+                }
+            }
+        }
+
+        public bool OpenForTooLong
+        {
+            get => (State & DoorStates.OpenForTooLong) == DoorStates.OpenForTooLong;
+            set
+            {
+                if (value)
+                {
+                    State |= DoorStates.OpenForTooLong;
+                }
+            }
+        }
+
+        public bool OpenedForcibly
+        {
+            get => (State & DoorStates.OpenedForcibly) == DoorStates.OpenedForcibly;
+            set
+            {
+                if (value)
+                {
+                    State |= DoorStates.OpenedForcibly;
                 }
             }
         }
         
 
         [Flags]
-        public enum PossibleState
+        public enum DoorStates
         {
             Locked = 1,
             Open = 2,

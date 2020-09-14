@@ -19,6 +19,7 @@ namespace BuildingManager
             {
                 if (value < 0 || value > 100)
                 {
+                    // TODO event based
                     Helper.PrintError("Volume of the speaker must be between 0 and 100.");
                     return;
                 }
@@ -47,10 +48,8 @@ namespace BuildingManager
         }
 
         public override string GetCurrentState()
-        {
-            return base.GetCurrentState() + $"\nPlaying: {Sound}\nVolume: {Volume}";
-        }
-
+            => base.GetCurrentState() + $"\nPlaying: {Sound}\nVolume: {Volume}";
+    
         public enum SoundOptions
         {
             None,

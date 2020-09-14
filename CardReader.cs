@@ -34,7 +34,7 @@ namespace BuildingManager
             return (cardNumber.Length % 2 == 0 && cardNumber.Length < 16)
                    && Regex.IsMatch(cardNumber.ToUpper(), @"^[0-9A-F]+$");
         }
-        
+
         private static string ReverseBytesAndPad(string input)
         {
             var sb = new StringBuilder();
@@ -46,6 +46,7 @@ namespace BuildingManager
 
             return sb.ToString().PadLeft(16, '0');
         }
+
 
         public override string GetCurrentState() =>
             base.GetCurrentState() + $"\nAccess Number: {AccessCardNumber}";
