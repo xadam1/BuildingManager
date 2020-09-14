@@ -174,7 +174,7 @@ namespace BuildingManager
                                     continue;
                                 }
                                 var deviceType = commands[3];
-                                
+
                                 string deviceName = null;
                                 if (commands.Length == 5)
                                 {
@@ -218,7 +218,7 @@ namespace BuildingManager
                     case "Info":
                         if (commands.Length < 3)
                         {
-                            Helper.PrintError("Invalid syntax for Info command.");
+                            Helper.PrintError("Insufficient number of arguments.");
                             continue;
                         }
 
@@ -226,11 +226,8 @@ namespace BuildingManager
                         {
                             case "device":
                             case "Device":
-                                Device device;
-                                device = int.TryParse(commands[2], out var id) 
-                                    ? Building.GetDeviceById(id) 
-                                    : Building.GetDeviceByName(commands[2]);
-                                
+                                var device = GetDevice(commands[2]);
+
                                 if (device is null)
                                 {
                                     Helper.PrintError("Device not found.");
@@ -253,6 +250,39 @@ namespace BuildingManager
                                 Helper.PrintSectionInfo(section);
                                 break;
                         }
+                        break;
+
+
+                    case "rename":
+                    case "Rename":
+                        if (commands.Length < 4)
+                        {
+                            Helper.PrintError("Insufficient number of arguments.");
+                            continue;
+                        }
+
+                        switch (commands[1])
+                        {
+                            case "device":
+                            case "Device":
+                                var device = GetDevice(commands[2]);
+                                if (device is null)
+                                {
+                                    Helper.PrintError("Device not found.");
+                                    continue;
+                                }
+                                device.Rename(commands[3]);
+                                break;
+
+                            case "section":
+                            case "Section":
+                                var section = GetSectionByName(commands[2]);
+                                section.Name = commands[3];
+                                break;
+                        }
+
+
+
                         break;
                 }
 
@@ -610,6 +640,13 @@ namespace BuildingManager
         private static Section GetSectionByName(string sectionName)
         {
             return Building.Sections.FirstOrDefault(section => section.Name == sectionName);
+        }
+
+        private static Device GetDevice(string identificator)
+        {
+            return int.TryParse(identificator, out var id)
+                 ? Building.GetDeviceById(id)
+                 : Building.GetDeviceByName(identificator);
         }
 
         #endregion

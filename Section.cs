@@ -24,6 +24,7 @@ namespace BuildingManager
             get => _name;
             set
             {
+                //TODO WTF??
                 _name = value;
                 // To not display newly created empty Section
                 if (Name != null) { OnSectionModified(); }
