@@ -153,20 +153,9 @@ namespace BuildingManager
                         Building.BuildingPlan();
                         break;
 
-                    /*
-                                        case "select section":
-                                        case "section select":
-                                        case "ss":
-                                        case "SS":
-                                            _selectedSection = GetSection();
-                                            if (CheckIfSelectedSectionIsNull()) { continue; }
-
-                                            Helper.SectionSelectedMessage(_selectedSection);
-                                            break;
-                    */
-
-                    // Adding Sections and Devices
+                    // Add Sections and Devices
                     case "add":
+                    case "Add":
                         switch (commands[1])
                         {
                             case "device":
@@ -192,6 +181,7 @@ namespace BuildingManager
                                     deviceName = commands[4];
                                 }
 
+                                // TODO check unique device names?
                                 if (Enum.TryParse(deviceType, out DeviceTypes type))
                                 {
                                     targetSection.AddDevice(type, deviceName);
@@ -218,7 +208,49 @@ namespace BuildingManager
 
 
                             default:
-                                Helper.PrintError("Wrong Add Command Syntax.");
+                                Helper.PrintError("Invalid Add Command Syntax. Check 'help'.");
+                                break;
+                        }
+                        break;
+
+
+                    case "info":
+                    case "Info":
+                        if (commands.Length < 3)
+                        {
+                            Helper.PrintError("Invalid syntax for Info command.");
+                            continue;
+                        }
+
+                        switch (commands[1])
+                        {
+                            case "device":
+                            case "Device":
+                                Device device;
+                                device = int.TryParse(commands[2], out var id) 
+                                    ? Building.GetDeviceById(id) 
+                                    : Building.GetDeviceByName(commands[2]);
+                                
+                                if (device is null)
+                                {
+                                    Helper.PrintError("Device not found.");
+                                    continue;
+                                }
+
+                                Helper.PrintDeviceInfo(device);
+                                break;
+
+
+                            case "section":
+                            case "Section":
+                                var section = Building.Sections
+                                    .SingleOrDefault(sec => sec.Name == commands[2]);
+                                if (section is null)
+                                {
+                                    Helper.PrintError("Section not found.");
+                                    continue;
+                                }
+                                Helper.PrintSectionInfo(section);
                                 break;
                         }
                         break;
