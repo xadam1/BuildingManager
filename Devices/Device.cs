@@ -32,6 +32,7 @@ namespace BuildingManager.Devices
             return $"Type:\t{Type}\nName:\t{Name}\nID:\t{Id}";
         }
         
+        // TODO udelat v setteru
         public void Rename(string newName)
         {
             Name = newName;

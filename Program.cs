@@ -213,7 +213,7 @@ namespace BuildingManager
                         }
                         break;
 
-
+                    // Display info about section or device
                     case "info":
                     case "Info":
                         if (commands.Length < 3)
@@ -252,7 +252,7 @@ namespace BuildingManager
                         }
                         break;
 
-
+                    // Rename device or section
                     case "rename":
                     case "Rename":
                         if (commands.Length < 4)
@@ -277,24 +277,56 @@ namespace BuildingManager
                             case "section":
                             case "Section":
                                 var section = GetSectionByName(commands[2]);
+                                if (section is null)
+                                {
+                                    Helper.PrintError("Section not found.");
+                                    continue;
+                                }
                                 section.Name = commands[3];
                                 break;
                         }
-
-
-
                         break;
+
+                    // Removing devices or sections
+                    case "delete":
+                    case "Delete":
+                        if (commands.Length < 3)
+                        {
+                            Helper.PrintError("Insufficient number of arguments.");
+                            continue;
+                        }
+
+                        switch (commands[1])
+                        {
+                            case "device":
+                            case "Device":
+                                if (!RemoveDevice(commands[2]))
+                                {
+                                    Helper.PrintError("Error during removing device.");
+                                }
+                                break;
+
+                            case "section":
+                            case "Section":
+                                if (!Building.RemoveSection(commands[2]))
+                                {
+                                    Helper.PrintError("Error during removing section.");
+                                }
+                                break;
+                        }
+                        break;
+
+
+
+
                 }
 
             }
 
 
 
-
             #region old
-
-
-
+            /*
             var input = "";
             // Main App Loop, listening for commands
             while (input != "exit")
@@ -520,8 +552,8 @@ namespace BuildingManager
                 // print new line for cleaner output
                 Console.WriteLine();
             }
+            */
             #endregion
-
         }
 
         #region CheckMethods
@@ -648,7 +680,13 @@ namespace BuildingManager
                  ? Building.GetDeviceById(id)
                  : Building.GetDeviceByName(identificator);
         }
-
         #endregion
+
+        private static bool RemoveDevice(string identificator)
+        {
+            return int.TryParse(identificator, out var id)
+                ? Building.RemoveDevice(id)
+                : Building.RemoveDevice(identificator);
+        }
     }
 }

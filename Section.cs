@@ -58,6 +58,12 @@ namespace BuildingManager
             OnSectionModified();
         }
 
+        public void RemoveDevice(Device device)
+        {
+            Devices.Remove(device);
+            OnSectionModified();
+        }
+
 
         // Returns actual device object, null if None matched the name/id
         public Device FindDeviceByName(string name) => Devices

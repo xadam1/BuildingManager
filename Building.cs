@@ -38,5 +38,45 @@ namespace BuildingManager
             return Sections.Select(section => section.FindDeviceByName(name))
                 .FirstOrDefault(res => res != null);
         }
+        
+
+        public bool RemoveSection(string name)
+        {
+            var section = Sections.FirstOrDefault(x => x.Name == name);
+            if (section is null)
+            {
+                return false;
+            }
+
+            Sections.Remove(section);
+            BuildingPlan();
+            return true;
+        }
+
+        public bool RemoveDevice(int id)
+        {
+            foreach (var section in Sections)
+            {
+                var device = section.Devices.FirstOrDefault(x => x.Id == id);
+                if (device == null) continue;
+                
+                section.RemoveDevice(device);
+                return true;
+            }
+            return false;
+        }
+
+        public bool RemoveDevice(string name)
+        {
+            foreach (var section in Sections)
+            {
+                var device = section.Devices.FirstOrDefault(x => x.Name == name);
+                if (device == null) continue;
+
+                section.RemoveDevice(device);
+                return true;
+            }
+            return false;
+        }
     }
 }
