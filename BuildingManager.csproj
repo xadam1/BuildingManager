@@ -44,19 +44,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Building.cs" />
-    <Compile Include="CardReader.cs" />
-    <Compile Include="Device.cs" />
-    <Compile Include="DeviceType.cs" />
-    <Compile Include="Door.cs" />
+    <Compile Include="Devices\CardReader.cs" />
+    <Compile Include="Devices\Device.cs" />
+    <Compile Include="Devices\DeviceTypes.cs" />
+    <Compile Include="Devices\Door.cs" />
     <Compile Include="Helper.cs" />
-    <Compile Include="LedPanel.cs" />
+    <Compile Include="Devices\LedPanel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Section.cs" />
-    <Compile Include="Speaker.cs" />
+    <Compile Include="Devices\Speaker.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

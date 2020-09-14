@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using BuildingManager.Devices;
 
 namespace BuildingManager
 {
@@ -32,7 +33,7 @@ namespace BuildingManager
         public List<Device> Devices { get; set; } = new List<Device>();
 
 
-        public void AddDevice(DeviceType deviceType, string name)
+        public void AddDevice(DeviceTypes deviceType, string name)
         {
             var device = new Device(deviceType, name);
             device.DeviceModified += Helper.OnDeviceModified;
@@ -40,16 +41,16 @@ namespace BuildingManager
 
             switch (deviceType)
             {
-                case DeviceType.Door:
+                case DeviceTypes.Door:
                     Devices.Add((Door)device);
                     break;
-                case DeviceType.Speaker:
+                case DeviceTypes.Speaker:
                     Devices.Add((Speaker)device);
                     break;
-                case DeviceType.CardReader:
+                case DeviceTypes.CardReader:
                     Devices.Add((CardReader)device);
                     break;
-                case DeviceType.LedPanel:
+                case DeviceTypes.LedPanel:
                     Devices.Add((LedPanel)device);
                     break;
             }
@@ -57,7 +58,7 @@ namespace BuildingManager
         }
 
 
-        // Returns actual device object, null if None matched the name
+        // Returns actual device object, null if None matched the name/id
         public Device FindDeviceByName(string name) => Devices
             .SingleOrDefault(x => x.Name == name);
 
@@ -79,16 +80,16 @@ namespace BuildingManager
             {
                 switch (device.Type)
                 {
-                    case DeviceType.CardReader:
+                    case DeviceTypes.CardReader:
                         cardReaders.Add(device);
                         break;
-                    case DeviceType.Door:
+                    case DeviceTypes.Door:
                         doors.Add(device);
                         break;
-                    case DeviceType.Speaker:
+                    case DeviceTypes.Speaker:
                         speakers.Add(device);
                         break;
-                    case DeviceType.LedPanel:
+                    case DeviceTypes.LedPanel:
                         ledPanels.Add(device);
                         break;
                 }

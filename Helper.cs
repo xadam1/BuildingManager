@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using BuildingManager.Devices;
 
 namespace BuildingManager
 {
@@ -12,16 +13,16 @@ namespace BuildingManager
         {
             switch (device.Type)
             {
-                case DeviceType.Door:
+                case DeviceTypes.Door:
                     PrintDeviceInfo(device as Door);
                     break;
-                case DeviceType.Speaker:
+                case DeviceTypes.Speaker:
                     PrintDeviceInfo(device as Speaker);
                     break;
-                case DeviceType.LedPanel:
+                case DeviceTypes.LedPanel:
                     PrintDeviceInfo(device as LedPanel);
                     break;
-                case DeviceType.CardReader:
+                case DeviceTypes.CardReader:
                     PrintDeviceInfo(device as CardReader);
                     break;
             }
