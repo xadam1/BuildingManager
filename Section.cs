@@ -32,26 +32,30 @@ namespace BuildingManager
         public List<Device> Devices { get; set; } = new List<Device>();
 
 
-        // TODO add events that something was added
         public void AddDevice(DeviceType deviceType, string name)
         {
+            var device = new Device(deviceType, name);
+            device.DeviceModified += Helper.OnDeviceModified;
+            device.DeviceError += Helper.OnDeviceError;
+
             switch (deviceType)
             {
                 case DeviceType.Door:
-                    Devices.Add(new Door(name));
+                    Devices.Add((Door)device);
                     break;
                 case DeviceType.Speaker:
-                    Devices.Add(new Speaker(name));
+                    Devices.Add((Speaker)device);
                     break;
                 case DeviceType.CardReader:
-                    Devices.Add(new CardReader(name));
+                    Devices.Add((CardReader)device);
                     break;
                 case DeviceType.LedPanel:
-                    Devices.Add(new LedPanel(name));
+                    Devices.Add((LedPanel)device);
                     break;
             }
             OnSectionModified();
         }
+
 
         // Returns actual device object, null if None matched the name
         public Device FindDeviceByName(string name) => Devices

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace BuildingManager
 {
@@ -6,6 +7,9 @@ namespace BuildingManager
     {
         public delegate void OnDeviceModifiedEventHandler(Device device, EventArgs args);
         public event OnDeviceModifiedEventHandler DeviceModified;
+
+        public delegate void OnDeviceErrorEventHandler(Device device, ErrorEventArgs args);
+        public event OnDeviceErrorEventHandler DeviceError; 
 
         public Device(DeviceType type, string name)
         {
@@ -33,6 +37,12 @@ namespace BuildingManager
         protected void OnDeviceModified()
         {
             DeviceModified?.Invoke(this, EventArgs.Empty);
+        }
+
+        protected void OnDeviceError(string message)
+        {
+            var exception = new Exception(message);
+            DeviceError?.Invoke(this, new ErrorEventArgs(exception));
         }
     }
 }

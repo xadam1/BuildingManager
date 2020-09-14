@@ -19,8 +19,7 @@ namespace BuildingManager
             {
                 if (value < 0 || value > 100)
                 {
-                    // TODO event based
-                    Helper.PrintError("Volume of the speaker must be between 0 and 100.");
+                    OnDeviceError("Volume of the speaker must be between 0 and 100.");
                     return;
                 }
                 _volume = value;

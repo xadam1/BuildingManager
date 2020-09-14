@@ -18,8 +18,7 @@ namespace BuildingManager
             {
                 if (!ValidateCardNumber(value))
                 {
-                    // TODO Event based error
-                    Helper.PrintError("Card Number is not valid!");
+                    OnDeviceError("Card Number is not valid!");
                     return;
                 }
 

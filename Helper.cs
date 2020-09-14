@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace BuildingManager
 {
@@ -24,6 +25,11 @@ namespace BuildingManager
                     PrintDeviceInfo(device as CardReader);
                     break;
             }
+        }
+
+        public static void OnDeviceError(Device device, ErrorEventArgs e)
+        {
+            PrintError(e.GetException().Message);
         }
         
         public static void OnSectionModified(Section section, EventArgs e)
