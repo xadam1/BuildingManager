@@ -94,6 +94,7 @@ namespace BuildingManager
         // Does some initial moving, renaming, deleting, etc...
         private static void PerformSomeOperations()
         {
+            /*
             // MOVE DEVICE TO ANOTHER LOCATION
             Console.WriteLine("Moving 'Subwoofer' from 'SectionA' -> 'SectionB'");
             _selectedSection = Building.Sections.Single(sec => sec.Name == "SectionA");
@@ -119,6 +120,7 @@ namespace BuildingManager
 
             _selectedSection = null;
             _selectedDevice = null;
+            */
         }
         #endregion
 
@@ -195,7 +197,8 @@ namespace BuildingManager
                             case "Section":
                                 if (commands.Length < 3)
                                 {
-                                    Helper.PrintError("Specify section name, ex.: 'new section MainSection'");
+                                    Helper.PrintError("Specify section name, ex.: 'add section MainSection'");
+                                    continue;
                                 }
                                 var newSectionName = commands[2];
                                 if (!CheckSectionNameAvailability(newSectionName))
@@ -240,8 +243,7 @@ namespace BuildingManager
 
                             case "section":
                             case "Section":
-                                var section = Building.Sections
-                                    .SingleOrDefault(sec => sec.Name == commands[2]);
+                                var section = GetSectionByName(commands[2]);
                                 if (section is null)
                                 {
                                     Helper.PrintError("Section not found.");
@@ -316,9 +318,29 @@ namespace BuildingManager
                         }
                         break;
 
+                    // Move 
+                    case "mv":
+                    case "Mv":
+                    case "move":
+                    case "Move":
+                        if (commands.Length < 3)
+                        {
+                            Helper.PrintError("Insufficient number of arguments.");
+                            continue;
+                        }
 
+                        var newSection = GetSectionByName(commands[2]);
+                        if (newSection is null)
+                        {
+                            Helper.PrintError("New section not found!");
+                            continue;
+                        }
 
-
+                        if (!Building.MoveDevice(commands[1], newSection))
+                        {
+                            Helper.PrintError("An error occured during moving operation.");
+                        }
+                        break;
                 }
 
             }
@@ -557,6 +579,7 @@ namespace BuildingManager
         }
 
         #region CheckMethods
+        /*
         private static bool CheckIfSelectedSectionIsNull()
         {
             if (!(_selectedSection is null)) return false;
@@ -577,12 +600,13 @@ namespace BuildingManager
             Helper.PrintError($"You must select {deviceType} to modify it.");
             return false;
         }
-
+        */
         // Returns false if section with given name already exists
         private static bool CheckSectionNameAvailability(string name) =>
             Building.Sections.SingleOrDefault(x => x.Name == name) == null;
         #endregion
 
+        /*
         // Moves _selectedDevice into targetSection
         private static void MoveDeviceToAnotherSection(Section targetSection)
         {
@@ -610,6 +634,7 @@ namespace BuildingManager
             }
             Helper.PrintDeviceMoved(_selectedDevice, _selectedSection, targetSection);
         }
+        
 
         private static void RemoveSelectedDeviceFromSelectedSection()
         {
@@ -635,16 +660,16 @@ namespace BuildingManager
             Helper.PrintDeviceDeletedFromSectionMessage(_selectedDevice, _selectedSection);
             _selectedDevice = null;
         }
-
+        */
 
         #region GetMethods
-        // Returns Device object or null if not found
+        /*// Returns Device object or null if not found
         private static Device GetDevice()
         {
             var (type, name) = GetDeviceTypeAndName();
             return _selectedSection.FindDeviceByName(name);
         }
-
+        
         // TODO CHECK WRONG INPUT
         // Asks user to type DeviceType and name -> parses the type into correct enum, returns tuple
         private static (DeviceTypes, string) GetDeviceTypeAndName()
@@ -660,7 +685,8 @@ namespace BuildingManager
             Enum.TryParse(ln?[0], out DeviceTypes type);
             return (type, name);
         }
-
+        */
+        /*
         // Asks user to type section -> returns Section object or null if not found
         private static Section GetSection()
         {
@@ -668,6 +694,7 @@ namespace BuildingManager
             var section = Console.ReadLine();
             return Building.Sections.FirstOrDefault(x => x.Name == section);
         }
+        */
 
         private static Section GetSectionByName(string sectionName)
         {

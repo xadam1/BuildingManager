@@ -36,25 +36,33 @@ namespace BuildingManager
 
         public void AddDevice(DeviceTypes deviceType, string name)
         {
-            var device = new Device(deviceType, name);
-            device.DeviceModified += Helper.OnDeviceModified;
-            device.DeviceError += Helper.OnDeviceError;
+            Device device;
 
             switch (deviceType)
             {
                 case DeviceTypes.Door:
-                    Devices.Add((Door)device);
+                    device = new Door(name);
+                    Devices.Add(device);
                     break;
                 case DeviceTypes.Speaker:
-                    Devices.Add((Speaker)device);
+                    device = new Speaker(name);
+                    Devices.Add(device);
                     break;
                 case DeviceTypes.CardReader:
-                    Devices.Add((CardReader)device);
+                    device = new CardReader(name);
+                    Devices.Add(device);
                     break;
                 case DeviceTypes.LedPanel:
-                    Devices.Add((LedPanel)device);
+                    device = new LedPanel(name);
+                    Devices.Add(device);
                     break;
+
+                default:
+                    return;
             }
+
+            device.DeviceModified += Helper.OnDeviceModified;
+            device.DeviceError += Helper.OnDeviceError;
             OnSectionModified();
         }
 

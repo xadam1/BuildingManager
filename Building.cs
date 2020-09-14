@@ -7,7 +7,7 @@ namespace BuildingManager
     {
         public List<Section> Sections { get; set; } = new List<Section>();
 
-        
+
         public void AddSection(string name)
         {
             var section = new Section(name);
@@ -38,7 +38,7 @@ namespace BuildingManager
             return Sections.Select(section => section.FindDeviceByName(name))
                 .FirstOrDefault(res => res != null);
         }
-        
+
 
         public bool RemoveSection(string name)
         {
@@ -59,7 +59,7 @@ namespace BuildingManager
             {
                 var device = section.Devices.FirstOrDefault(x => x.Id == id);
                 if (device == null) continue;
-                
+
                 section.RemoveDevice(device);
                 return true;
             }
@@ -77,6 +77,46 @@ namespace BuildingManager
                 return true;
             }
             return false;
+        }
+
+        // Moves device from it's current section into 'newSection',
+        // returns true if succeeded, false otherwise
+        public bool MoveDevice(string deviceIdentificator, Section newSection)
+        {
+            Section currentSection = null;
+            Devices.Device device = null;
+
+            // If identificator is ID
+            if (int.TryParse(deviceIdentificator, out var id))
+            {
+                foreach (var section in Sections)
+                {
+                    device = section.Devices.SingleOrDefault(x => x.Id == id);
+                    if (device == null) continue;
+
+                    currentSection = section;
+                    break;
+                }
+            }
+            else
+            {
+                foreach (var section in Sections)
+                {
+                    device = section.Devices.SingleOrDefault(x => x.Name == deviceIdentificator);
+                    if (device == null) continue;
+
+                    currentSection = section;
+                    break;
+                }
+            }
+
+            // Was device found? if not return false
+            if (device == null) return false;
+
+            newSection.Devices.Add(device);
+            currentSection.Devices.Remove(device);
+            BuildingPlan();
+            return true;
         }
     }
 }
