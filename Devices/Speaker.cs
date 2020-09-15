@@ -3,12 +3,22 @@
     public class Speaker : Device
     {
         private float _volume = 50f;
+        private SoundOptions _sound;
 
         public Speaker(string name) : base(DeviceTypes.Speaker, name ?? "Speaker")
         {
+            Sound = SoundOptions.None;
         }
 
-        public SoundOptions Sound { get; private set; } = SoundOptions.None;
+        public SoundOptions Sound
+        {
+            get => _sound;
+            set
+            {
+                _sound = value;
+                OnDeviceModified();
+            }
+        }
 
         public float Volume
         {
@@ -25,6 +35,7 @@
             }
         }
 
+        /*
         // Methods to change Sound
         public void PlayMusic()
         {
@@ -43,6 +54,7 @@
             Sound = SoundOptions.None;
             OnDeviceModified();
         }
+        */
 
         public override string GetCurrentState()
             => base.GetCurrentState() + $"\nPlaying: {Sound}\nVolume: {Volume}";

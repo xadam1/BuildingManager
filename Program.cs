@@ -341,241 +341,145 @@ namespace BuildingManager
                             Helper.PrintError("An error occured during moving operation.");
                         }
                         break;
-                }
 
-            }
-
-
-
-            #region old
-            /*
-            var input = "";
-            // Main App Loop, listening for commands
-            while (input != "exit")
-            {
-                input = Console.ReadLine();
-                switch (input?.ToLower())
-                {
-                    case "help":
-                    case "h":
-                        Helper.PrintHelp();
-                        break;
-
-                    case "building plan":
-                    case "plan":
-                        Building.BuildingPlan();
-                        break;
-
-
-                    // SECTION COMMANDS
-                    case "section":
-                        if (!CheckIfSelectedSectionIsNull())
-                        { Helper.SectionSelectedMessage(_selectedSection); }
-                        break;
-
-                    case "new section":
-                        Console.WriteLine("What is the name of this section?");
-                        var newSectionName = Console.ReadLine();
-                        if (!CheckSectionNameAvailability(newSectionName))
+                    // Changing Access Number, Sound, Volume or Text of devices
+                    case "change":
+                    case "ch":
+                        if (commands.Length < 4)
                         {
-                            Helper.PrintError("Sorry, this section already exists.");
+                            Helper.PrintError("Insufficient number of arguments.");
                             continue;
                         }
-                        Building.AddSection(newSectionName);
-                        break;
 
-                    case "select section":
-                    case "section select":
-                    case "ss":
-                    case "SS":
-                        _selectedSection = GetSection();
-                        if (CheckIfSelectedSectionIsNull()) { continue; }
-
-                        Helper.SectionSelectedMessage(_selectedSection);
-                        break;
-
-                    case "section info":
-                        if (CheckIfSelectedSectionIsNull()) { continue; }
-                        Helper.PrintSectionInfo(_selectedSection);
-                        break;
-
-                    case "rename section":
-                    case "section rename":
-                        if (CheckIfSelectedSectionIsNull()) { continue; }
-
-                        Console.WriteLine("Enter new name for selected section...");
-                        _selectedSection.Name = Console.ReadLine();
-                        break;
-
-                    case "delete section":
-                    case "section delete":
-                        if (CheckIfSelectedSectionIsNull()) { continue; }
-
-                        Building.Sections.Remove(_selectedSection);
-                        Helper.PrintSectionDeleted(_selectedSection);
-                        _selectedSection = null;
-                        break;
-
-
-                    // DEVICE COMMANDS
-                    case "device":
-                        if (!CheckIfSelectedDeviceIsNull()) { Helper.DeviceSelectedMessage(_selectedDevice); }
-                        break;
-
-                    case "select device":
-                        if (CheckIfSelectedSectionIsNull()) { continue; }
-                        _selectedDevice = GetDevice();
-                        if (!CheckIfSelectedDeviceIsNull()) { Helper.DeviceSelectedMessage(_selectedDevice); }
-                        break;
-
-                    case "new device":
-                        if (CheckIfSelectedSectionIsNull()) { continue; }
-                        var (device, name) = GetDeviceTypeAndName();
-                        _selectedSection.AddDevice(device, name);
-                        break;
-
-                    case "rename device":
-                    case "device rename":
-                        if (CheckIfSelectedDeviceIsNull()) { continue; }
-                        Console.WriteLine("Enter new name for device...");
-                        _selectedDevice.Rename(Console.ReadLine());
-                        break;
-
-                    case "device info":
-                        if (!CheckIfSelectedDeviceIsNull()) { Helper.PrintDeviceInfo(_selectedDevice); }
-                        break;
-
-                    case "delete device":
-                    case "delete":
-                        if (CheckIfSelectedSectionIsNull() || CheckIfSelectedDeviceIsNull()) { continue; }
-                        RemoveSelectedDeviceFromSelectedSection();
-                        break;
-
-                    case "move device":
-                    case "move":
-                        if (CheckIfSelectedSectionIsNull() || CheckIfSelectedDeviceIsNull()) { continue; }
-                        var targetSection = GetSection();
-                        if (targetSection == null)
+                        var targetDevice = GetDevice(commands[2]);
+                        if (targetDevice is null)
                         {
-                            Helper.PrintError("Target Section Not Found!");
+                            Helper.PrintError("Target device not found.");
                             continue;
                         }
-                        MoveDeviceToAnotherSection(targetSection);
-                        break;
 
-
-                    // LEDPANEL MANIPULATION
-                    case "change text":
-                        if (CheckIfSelectedDeviceIsMatch(DeviceTypes.LedPanel))
+                        switch (commands[1])
                         {
-                            Console.WriteLine("Enter new text...");
-                            (_selectedDevice as LedPanel).Message = Console.ReadLine();
+                            case "access":
+                            case "Access":
+                                if (IsDeviceTypeMatch(targetDevice, DeviceTypes.CardReader))
+                                {
+                                    (targetDevice as CardReader).AccessCardNumber = commands[3];
+                                }
+                                break;
+
+                            case "volume":
+                            case "Volume":
+                                if (IsDeviceTypeMatch(targetDevice, DeviceTypes.Speaker))
+                                {
+                                    if (!float.TryParse(commands[3], out var volume))
+                                    {
+                                        Helper.PrintError("Volume must be a float.");
+                                        continue;
+                                    }
+                                    (targetDevice as Speaker).Volume = volume;
+                                }
+                                break;
+
+                            case "sound":
+                            case "Sound":
+                                if (IsDeviceTypeMatch(targetDevice, DeviceTypes.Speaker))
+                                {
+                                    switch (commands[3])
+                                    {
+                                        case "none":
+                                        case "None":
+                                            (targetDevice as Speaker).Sound = Speaker.SoundOptions.None;
+                                            break;
+
+                                        case "alarm":
+                                        case "Alarm":
+                                            (targetDevice as Speaker).Sound = Speaker.SoundOptions.Alarm;
+                                            break;
+
+                                        case "music":
+                                        case "Music":
+                                            (targetDevice as Speaker).Sound = Speaker.SoundOptions.Music;
+                                            break;
+
+                                        default:
+                                            Helper.PrintError("Sound can be changed to 'None'/'Alarm'/'Music'.");
+                                            break;
+                                    }
+                                }
+                                break;
+
+                            case "text":
+                            case "Text":
+                                if (IsDeviceTypeMatch(targetDevice, DeviceTypes.LedPanel))
+                                {
+                                    (targetDevice as LedPanel).Message = commands[3];
+                                }
+                                break;
                         }
                         break;
 
 
-                    // DOOR MANIPULATION
-                    case "open door":
-                    case "open":
-                        if (!CheckIfSelectedDeviceIsNull() && CheckIfSelectedDeviceIsMatch(DeviceTypes.Door))
+                    // set MainDoor open
+                    case "setdoor":
+                    case "setDoor":
+                    case "SetDoor":
+                    case "door":
+                    case "set":
+                        if (commands.Length < 3)
                         {
-                            (_selectedDevice as Door).OpenDoor();
-                        }
-                        break;
-
-                    case "lock door":
-                    case "lock":
-                        if (!CheckIfSelectedDeviceIsNull() && CheckIfSelectedDeviceIsMatch(DeviceTypes.Door))
-                        {
-                            (_selectedDevice as Door).LockDoor();
-                        }
-                        break;
-
-                    case "opentoolong door":
-                    case "opentoolong":
-                    case "toolong":
-                        if (!CheckIfSelectedDeviceIsNull() && CheckIfSelectedDeviceIsMatch(DeviceTypes.Door))
-                        {
-                            (_selectedDevice as Door).SetOpenForTooLong();
-                        }
-                        break;
-
-                    case "openforcibly door":
-                    case "door openforcibly":
-                    case "openforcibly":
-                    case "forcibly":
-                        if (!CheckIfSelectedDeviceIsNull() && CheckIfSelectedDeviceIsMatch(DeviceTypes.Door))
-                        {
-                            (_selectedDevice as Door).SetOpenedForcibly();
-                        }
-                        break;
-
-
-                    // SPEAKER MANIPULATION
-                    case "volume":
-                    case "change volume":
-                        if (CheckIfSelectedDeviceIsNull() || !CheckIfSelectedDeviceIsMatch(DeviceTypes.Speaker)) { continue; }
-
-                        Console.WriteLine("Enter new volume (Number between 0 and 100)...");
-                        if (!float.TryParse(Console.ReadLine(), out var parsedInput))
-                        {
-                            Helper.PrintError("Enter a number");
+                            Helper.PrintError("Insufficient number of arguments.");
                             continue;
                         }
-                        (_selectedDevice as Speaker).Volume = parsedInput;
-                        break;
 
-                    case "sound":
-                    case "change sound":
-                        if (CheckIfSelectedDeviceIsNull() || !CheckIfSelectedDeviceIsMatch(DeviceTypes.Speaker)) { continue; }
-
-                        Console.WriteLine($"What do you want {_selectedDevice.Name} to play? (Alarm/Music/None)");
-                        switch (Console.ReadLine())
+                        var door = GetDevice(commands[1]);
+                        if (door is null)
                         {
-                            case "Alarm":
-                            case "alarm":
-                                (_selectedDevice as Speaker).PlayAlarm();
+                            Helper.PrintError("Door could not be found.");
+                            continue;
+                        }
+
+                        switch (commands[2])
+                        {
+                            case "open":
+                            case "Open":
+                                (door as Door).Open = !(door as Door).Open;
                                 break;
 
-                            case "Music":
-                            case "music":
-                                (_selectedDevice as Speaker).PlayMusic();
+                            case "lock":
+                            case "Lock":
+                                (door as Door).Locked = !(door as Door).Locked;
                                 break;
 
-                            case "None":
-                            case "none":
-                                (_selectedDevice as Speaker).StopPlaying();
+                            case "openedforcibly":
+                            case "OpenedForcibly":
+                            case "forcibly":
+                            case "force":
+                            case "forceopen":
+                            case "openforced":
+                            case "openforce":
+                                (door as Door).OpenedForcibly = !(door as Door).OpenedForcibly;
                                 break;
 
-                            default:
-                                Helper.PrintError("Invalid sound. Select 'Alarm/Music/None'.");
+                            case "openfortoolong":
+                            case "OpenForTooLong":
+                            case "toolong":
+                            case "long":
+                            case "longopen":
+                            case "opentoolong":
+                            case "openlong":
+                                (door as Door).OpenForTooLong = !(door as Door).OpenForTooLong;
                                 break;
                         }
                         break;
 
-
-                    // CARD MANIPULATION
-                    case "access":
-                    case "change access":
-                        if (!CheckIfSelectedDeviceIsMatch(DeviceTypes.CardReader)) { continue; }
-
-                        Console.WriteLine("Please enter new card number...");
-                        (_selectedDevice as CardReader).AccessCardNumber = Console.ReadLine();
-                        break;
 
                     // If Command was invalid or was not recognized
                     default:
                         Helper.PrintError("Unknown Command!");
                         break;
-
-
                 }
-
-                // print new line for cleaner output
-                Console.WriteLine();
             }
-            */
-            #endregion
         }
 
         #region CheckMethods
@@ -594,13 +498,16 @@ namespace BuildingManager
             return true;
         }
 
-        private static bool CheckIfSelectedDeviceIsMatch(DeviceTypes deviceType)
+        */
+
+        // Checks if 'device' is of type 'desiredDeviceType', return true if yes,
+        // displays error and returns false otherwise
+        private static bool IsDeviceTypeMatch(Device device, DeviceTypes desireDeviceType)
         {
-            if (_selectedDevice.Type == deviceType) return true;
-            Helper.PrintError($"You must select {deviceType} to modify it.");
+            if (device.Type == desireDeviceType) return true;
+            Helper.PrintError($"You must select device of type {desireDeviceType} to modify it.");
             return false;
         }
-        */
         // Returns false if section with given name already exists
         private static bool CheckSectionNameAvailability(string name) =>
             Building.Sections.SingleOrDefault(x => x.Name == name) == null;

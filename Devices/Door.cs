@@ -26,6 +26,11 @@ namespace BuildingManager.Devices
                 {
                     State |= DoorStates.Open;
                 }
+                else
+                {
+                    State ^= DoorStates.Open;
+                }
+                OnDeviceModified();
             }
         }
 
@@ -38,6 +43,11 @@ namespace BuildingManager.Devices
                 {
                     State |= DoorStates.Locked;
                 }
+                else
+                {
+                    State ^= DoorStates.Locked;
+                }
+                OnDeviceModified();
             }
         }
 
@@ -50,6 +60,11 @@ namespace BuildingManager.Devices
                 {
                     State |= DoorStates.OpenForTooLong;
                 }
+                else
+                {
+                    State ^= DoorStates.OpenForTooLong;
+                }
+                OnDeviceModified();
             }
         }
 
@@ -62,9 +77,14 @@ namespace BuildingManager.Devices
                 {
                     State |= DoorStates.OpenedForcibly;
                 }
+                else
+                {
+                    State ^= DoorStates.OpenedForcibly;
+                }
+                OnDeviceModified();
             }
         }
-        
+
 
         [Flags]
         public enum DoorStates
