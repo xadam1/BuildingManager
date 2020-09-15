@@ -159,11 +159,8 @@ namespace BuildingManager
                         {
                             case "device":
                             case "Device":
-                                if (commands.Length < 4)
-                                {
-                                    Helper.PrintError(
-                                        "Specify section, device type and name[optional]\nEx.: 'new device MainSection Speaker [Subwoofer]'");
-                                }
+                                if (!CheckNumberOfArgs(commands, 4))
+                                { continue; }
 
                                 var sectionName = commands[2];
                                 var targetSection = GetSectionByName(sectionName);
@@ -175,28 +172,25 @@ namespace BuildingManager
                                 var deviceType = commands[3];
 
                                 string deviceName = null;
+                                // If user input contains name for new device use it, default otherwise
                                 if (commands.Length == 5)
-                                {
-                                    deviceName = commands[4];
-                                }
+                                { deviceName = commands[4]; }
+
 
                                 // TODO check unique device names?
-                                if (Enum.TryParse(deviceType, out DeviceTypes type))
+                                if (!Enum.TryParse(deviceType, out DeviceTypes type))
                                 {
-                                    targetSection.AddDevice(type, deviceName);
+                                    Helper.PrintError("Device type not recognized.");
                                     continue;
                                 }
-                                Helper.PrintError("Device type not recognized.");
+                                targetSection.AddDevice(type, deviceName);
                                 break;
-
 
                             case "section":
                             case "Section":
-                                if (commands.Length < 3)
-                                {
-                                    Helper.PrintError("Specify section name, ex.: 'add section MainSection'");
-                                    continue;
-                                }
+                                if (!CheckNumberOfArgs(commands, 3))
+                                { continue; }
+
                                 var newSectionName = commands[2];
                                 if (!CheckSectionNameAvailability(newSectionName))
                                 {
@@ -206,7 +200,7 @@ namespace BuildingManager
                                 Building.AddSection(newSectionName);
                                 break;
 
-
+                            // Unknown second command
                             default:
                                 Helper.PrintError("Invalid Add Command Syntax. Check 'help'.");
                                 break;
@@ -216,11 +210,8 @@ namespace BuildingManager
                     // Display info about section or device
                     case "info":
                     case "Info":
-                        if (commands.Length < 3)
-                        {
-                            Helper.PrintError("Insufficient number of arguments.");
-                            continue;
-                        }
+                        if (CheckNumberOfArgs(commands, 3))
+                        { continue; }
 
                         switch (commands[1])
                         {
@@ -233,10 +224,8 @@ namespace BuildingManager
                                     Helper.PrintError("Device not found.");
                                     continue;
                                 }
-
                                 Helper.PrintDeviceInfo(device);
                                 break;
-
 
                             case "section":
                             case "Section":
@@ -254,11 +243,8 @@ namespace BuildingManager
                     // Rename device or section
                     case "rename":
                     case "Rename":
-                        if (commands.Length < 4)
-                        {
-                            Helper.PrintError("Insufficient number of arguments.");
-                            continue;
-                        }
+                        if (!CheckNumberOfArgs(commands, 4))
+                        { continue; }
 
                         switch (commands[1])
                         {
@@ -289,28 +275,21 @@ namespace BuildingManager
                     // Removing devices or sections
                     case "delete":
                     case "Delete":
-                        if (commands.Length < 3)
-                        {
-                            Helper.PrintError("Insufficient number of arguments.");
-                            continue;
-                        }
+                        if (!CheckNumberOfArgs(commands, 3))
+                        { continue; }
 
                         switch (commands[1])
                         {
                             case "device":
                             case "Device":
                                 if (!RemoveDevice(commands[2]))
-                                {
-                                    Helper.PrintError("Error during removing device.");
-                                }
+                                { Helper.PrintError("Error during removing device."); }
                                 break;
 
                             case "section":
                             case "Section":
                                 if (!Building.RemoveSection(commands[2]))
-                                {
-                                    Helper.PrintError("Error during removing section.");
-                                }
+                                { Helper.PrintError("Error during removing section."); }
                                 break;
                         }
                         break;
@@ -320,11 +299,8 @@ namespace BuildingManager
                     case "Mv":
                     case "move":
                     case "Move":
-                        if (commands.Length < 3)
-                        {
-                            Helper.PrintError("Insufficient number of arguments.");
-                            continue;
-                        }
+                        if (!CheckNumberOfArgs(commands, 3))
+                        { continue; }
 
                         var newSection = GetSectionByName(commands[2]);
                         if (newSection is null)
@@ -334,19 +310,14 @@ namespace BuildingManager
                         }
 
                         if (!Building.MoveDevice(commands[1], newSection))
-                        {
-                            Helper.PrintError("An error occured during moving operation.");
-                        }
+                        { Helper.PrintError("An error occured during moving operation."); }
                         break;
 
                     // Changing Access Number, Sound, Volume or Text of devices
                     case "change":
                     case "ch":
-                        if (commands.Length < 4)
-                        {
-                            Helper.PrintError("Insufficient number of arguments.");
-                            continue;
-                        }
+                        if (!CheckNumberOfArgs(commands, 4))
+                        { continue; }
 
                         var targetDevice = GetDevice(commands[2]);
                         if (targetDevice is null)
@@ -415,18 +386,15 @@ namespace BuildingManager
                                 break;
                         }
                         break;
-                        
+
                     // set MainDoor open
                     case "setdoor":
                     case "setDoor":
                     case "SetDoor":
                     case "door":
                     case "set":
-                        if (commands.Length < 3)
-                        {
-                            Helper.PrintError("Insufficient number of arguments.");
-                            continue;
-                        }
+                        if (!CheckNumberOfArgs(commands, 3))
+                        { continue; }
 
                         var door = GetDevice(commands[1]);
                         if (door is null)
@@ -468,7 +436,7 @@ namespace BuildingManager
                                 break;
                         }
                         break;
-                        
+
                     // If Command was invalid or was not recognized
                     default:
                         Helper.PrintError("Unknown Command!");
@@ -476,7 +444,7 @@ namespace BuildingManager
                 }
             }
         }
-        
+
 
         // Checks if 'device' is of type 'desiredDeviceType', return true if yes,
         // displays error and returns false otherwise
@@ -490,7 +458,16 @@ namespace BuildingManager
         // Returns false if section with given name already exists
         private static bool CheckSectionNameAvailability(string name) =>
             Building.Sections.SingleOrDefault(x => x.Name == name) == null;
-        
+
+        // Checks if 'commands' contains at least 'desiredNumber' of arguments
+        // true if yes, false otherwise
+        private static bool CheckNumberOfArgs(string[] commands, int desiredNumber)
+        {
+            if (commands.Length >= desiredNumber) return true;
+            Helper.PrintError("Insufficient number of arguments!");
+            return false;
+        }
+
 
         private static Section GetSectionByName(string sectionName)
         {
