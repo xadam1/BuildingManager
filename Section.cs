@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using BuildingManager.CustomEventArgs;
 using BuildingManager.Devices;
 
 namespace BuildingManager
@@ -10,7 +11,7 @@ namespace BuildingManager
     {
         private string _name;
 
-        public delegate void SectionModifiedEventHandler(Section section, EventArgs args);
+        public delegate void SectionModifiedEventHandler(BuildingPartModifiedEventArgs args);
         public event SectionModifiedEventHandler SectionModified;
 
 
@@ -24,10 +25,8 @@ namespace BuildingManager
             get => _name;
             set
             {
-                //TODO WTF??
                 _name = value;
-                // To not display newly created empty Section
-                if (Name != null) { OnSectionModified(); }
+                OnSectionModified();
             }
         }
 

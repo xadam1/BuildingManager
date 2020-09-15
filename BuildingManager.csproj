@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Building.cs" />
+    <Compile Include="CustomEventArgs\BuildingPartModifiedEventArgs.cs" />
     <Compile Include="Devices\CardReader.cs" />
     <Compile Include="Devices\Device.cs" />
     <Compile Include="Devices\DeviceTypes.cs" />

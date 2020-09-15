@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using BuildingManager.Devices;
 
@@ -175,9 +174,7 @@ namespace BuildingManager
                                 // If user input contains name for new device use it, default otherwise
                                 if (commands.Length == 5)
                                 { deviceName = commands[4]; }
-
-
-                                // TODO check unique device names?
+                                
                                 if (!Enum.TryParse(deviceType, out DeviceTypes type))
                                 {
                                     Helper.PrintError("Device type not recognized.");
@@ -256,7 +253,8 @@ namespace BuildingManager
                                     Helper.PrintError("Device not found.");
                                     continue;
                                 }
-                                device.Rename(commands[3]);
+
+                                device.Name = commands[3];
                                 break;
 
                             case "section":

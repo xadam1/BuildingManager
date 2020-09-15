@@ -1,15 +1,18 @@
 ﻿using System;
 using System.IO;
+using BuildingManager.CustomEventArgs;
 
 namespace BuildingManager.Devices
 {
     public class Device
     {
-        public delegate void OnDeviceModifiedEventHandler(Device device, EventArgs args);
+        private string _name;
+
+        public delegate void OnDeviceModifiedEventHandler(BuildingPartModifiedEventArgs args);
         public event OnDeviceModifiedEventHandler DeviceModified;
 
         public delegate void OnDeviceErrorEventHandler(Device device, ErrorEventArgs args);
-        public event OnDeviceErrorEventHandler DeviceError; 
+        public event OnDeviceErrorEventHandler DeviceError;
 
         public Device(DeviceTypes type, string name)
         {
@@ -18,30 +21,36 @@ namespace BuildingManager.Devices
             {
                 name = type.ToString();
             }
-            Name = name;    
+            Name = name;
         }
 
         public DeviceTypes Type { get; }
 
         public int Id { get; } = Helper.CalculateNewId();
 
-        public string Name { get; set; }
+        public string Name
+        {
+            get => _name;
+            set
+            {
+                _name = value;
+                OnDeviceModified();
+            }
+        }
 
         public virtual string GetCurrentState()
         {
             return $"Type:\t{Type}\nName:\t{Name}\nID:\t{Id}";
         }
-        
-        // TODO udelat v setteru
-        public void Rename(string newName)
-        {
-            Name = newName;
-            OnDeviceModified();
-        }
-        
+
+
         protected void OnDeviceModified()
         {
-            DeviceModified?.Invoke(this, EventArgs.Empty);
+            var args = new BuildingPartModifiedEventArgs()
+            {
+                Device = this
+            };
+            DeviceModified?.Invoke(args);
         }
 
         protected void OnDeviceError(string message)

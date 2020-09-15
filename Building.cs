@@ -1,10 +1,27 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using BuildingManager.CustomEventArgs;
+using BuildingManager.Devices;
 
 namespace BuildingManager
 {
     public class Building
     {
+        public delegate void BuildingPartModifiedEventHandler(BuildingPartModifiedEventArgs args);
+
+        public event BuildingPartModifiedEventHandler SectionRemoved;
+        public event BuildingPartModifiedEventHandler DeviceRemoved;
+        public event BuildingPartModifiedEventHandler DeviceMoved;
+
+        public Building()
+        {
+            DeviceRemoved += Helper.OnDeviceRemoved;
+            DeviceMoved += Helper.OnDeviceMoved;
+            SectionRemoved += Helper.OnDeviceRemoved;
+        }
+
+
         public List<Section> Sections { get; set; } = new List<Section>();
 
 
@@ -49,7 +66,7 @@ namespace BuildingManager
             }
 
             Sections.Remove(section);
-            BuildingPlan();
+            OnSectionRemoved(section);
             return true;
         }
 
@@ -61,6 +78,7 @@ namespace BuildingManager
                 if (device == null) continue;
 
                 section.RemoveDevice(device);
+                OnDeviceRemoved(device, section);
                 return true;
             }
             return false;
@@ -74,6 +92,7 @@ namespace BuildingManager
                 if (device == null) continue;
 
                 section.RemoveDevice(device);
+                OnDeviceRemoved(device, section);
                 return true;
             }
             return false;
@@ -115,8 +134,40 @@ namespace BuildingManager
 
             newSection.Devices.Add(device);
             currentSection.Devices.Remove(device);
-            BuildingPlan();
+            OnDeviceMoved(device, currentSection, newSection);
             return true;
+        }
+
+        protected void OnSectionRemoved(Section section)
+        {
+            var args = new BuildingPartModifiedEventArgs()
+            {
+                Building = this,
+                Section = section
+            };
+            SectionRemoved?.Invoke(args);
+        }
+
+        protected void OnDeviceRemoved(Device device, Section section)
+        {
+            var args = new BuildingPartModifiedEventArgs()
+            {
+                Device = device,
+                Section = section
+            };
+            DeviceRemoved?.Invoke(args);
+        }
+
+        protected virtual void OnDeviceMoved(Device device, Section oldSection, Section newSection)
+        {
+            var args = new BuildingPartModifiedEventArgs()
+            {
+                Building = this,
+                Device = device,
+                currentDeviceSection = newSection,
+                oldDeviceSection = oldSection
+            };
+            DeviceMoved?.Invoke(args);
         }
     }
 }

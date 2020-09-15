@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using BuildingManager.CustomEventArgs;
 using BuildingManager.Devices;
 
 namespace BuildingManager
@@ -9,8 +10,9 @@ namespace BuildingManager
         private static int _idCounter;
 
         #region EventHandlers
-        public static void OnDeviceModified(Device device, EventArgs e)
+        public static void OnDeviceModified(BuildingPartModifiedEventArgs args)
         {
+            var device = args.Device;
             switch (device.Type)
             {
                 case DeviceTypes.Door:
@@ -32,13 +34,30 @@ namespace BuildingManager
         {
             PrintError(e.GetException().Message);
         }
-        
-        public static void OnSectionModified(Section section, EventArgs e)
+
+        public static void OnSectionModified(BuildingPartModifiedEventArgs args)
         {
-            PrintSectionInfo(section);
+            PrintSectionInfo(args.Section);
+        }
+
+        public static void OnSectionRemoved(BuildingPartModifiedEventArgs args)
+        {
+            args.Building.BuildingPlan();
+            PrintSectionDeleted(args.Section);
+        }
+
+        public static void OnDeviceRemoved(BuildingPartModifiedEventArgs args)
+        {
+            PrintDeviceDeletedFromSectionMessage(args.Device, args.Section);
+        }
+
+        public static void OnDeviceMoved(BuildingPartModifiedEventArgs args)
+        {
+            args.Building.BuildingPlan();
+            PrintDeviceMoved(args.Device, args.oldDeviceSection, args.currentDeviceSection);
         }
         #endregion
-        
+
         public static int CalculateNewId() => _idCounter++;
 
         public static void Greetings()
@@ -139,21 +158,6 @@ namespace BuildingManager
             Console.WriteLine(new string('-', 27 + section.Name.Length));
             Console.ResetColor();
             Console.WriteLine();
-        }
-
-
-        public static void DeviceSelectedMessage(Device device)
-        {
-            Console.BackgroundColor = ConsoleColor.DarkGray;
-            Console.WriteLine($"Device selected: {device.Name}");
-            Console.ResetColor();
-        }
-
-        public static void SectionSelectedMessage(Section section)
-        {
-            Console.BackgroundColor = ConsoleColor.DarkGray;
-            Console.WriteLine($"Section selected: {section.Name}");
-            Console.ResetColor();
         }
 
 
