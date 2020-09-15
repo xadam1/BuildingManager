@@ -7,9 +7,6 @@ namespace BuildingManager
 {
     internal class Program
     {
-        private static Section _selectedSection;
-        private static Device _selectedDevice;
-
         private static readonly Building Building = new Building();
 
 
@@ -418,8 +415,7 @@ namespace BuildingManager
                                 break;
                         }
                         break;
-
-
+                        
                     // set MainDoor open
                     case "setdoor":
                     case "setDoor":
@@ -472,8 +468,7 @@ namespace BuildingManager
                                 break;
                         }
                         break;
-
-
+                        
                     // If Command was invalid or was not recognized
                     default:
                         Helper.PrintError("Unknown Command!");
@@ -481,24 +476,7 @@ namespace BuildingManager
                 }
             }
         }
-
-        #region CheckMethods
-        /*
-        private static bool CheckIfSelectedSectionIsNull()
-        {
-            if (!(_selectedSection is null)) return false;
-            Helper.PrintError("No section selected.");
-            return true;
-        }
-
-        private static bool CheckIfSelectedDeviceIsNull()
-        {
-            if (!(_selectedDevice is null)) return false;
-            Helper.PrintError("Unknown Device!");
-            return true;
-        }
-
-        */
+        
 
         // Checks if 'device' is of type 'desiredDeviceType', return true if yes,
         // displays error and returns false otherwise
@@ -508,105 +486,17 @@ namespace BuildingManager
             Helper.PrintError($"You must select device of type {desireDeviceType} to modify it.");
             return false;
         }
+
         // Returns false if section with given name already exists
         private static bool CheckSectionNameAvailability(string name) =>
             Building.Sections.SingleOrDefault(x => x.Name == name) == null;
-        #endregion
-
-        /*
-        // Moves _selectedDevice into targetSection
-        private static void MoveDeviceToAnotherSection(Section targetSection)
-        {
-            switch (_selectedDevice.Type)
-            {
-                case DeviceTypes.Door:
-                    targetSection.Doors.Add(_selectedDevice as Door);
-                    _selectedSection.Doors.Remove(_selectedDevice as Door);
-                    break;
-
-                case DeviceTypes.Speaker:
-                    targetSection.Speakers.Add(_selectedDevice as Speaker);
-                    _selectedSection.Speakers.Remove(_selectedDevice as Speaker);
-                    break;
-
-                case DeviceTypes.LedPanel:
-                    targetSection.LedPanels.Add(_selectedDevice as LedPanel);
-                    _selectedSection.LedPanels.Remove(_selectedDevice as LedPanel);
-                    break;
-
-                case DeviceTypes.CardReader:
-                    targetSection.CardReaders.Add(_selectedDevice as CardReader);
-                    _selectedSection.CardReaders.Remove(_selectedDevice as CardReader);
-                    break;
-            }
-            Helper.PrintDeviceMoved(_selectedDevice, _selectedSection, targetSection);
-        }
         
-
-        private static void RemoveSelectedDeviceFromSelectedSection()
-        {
-            switch (_selectedDevice.Type)
-            {
-                case DeviceTypes.Door:
-                    _selectedSection.Doors.Remove(_selectedDevice as Door);
-                    break;
-
-                case DeviceTypes.Speaker:
-                    _selectedSection.Speakers.Remove(_selectedDevice as Speaker);
-                    break;
-
-                case DeviceTypes.LedPanel:
-                    _selectedSection.LedPanels.Remove(_selectedDevice as LedPanel);
-                    break;
-
-                case DeviceTypes.CardReader:
-                    _selectedSection.CardReaders.Remove(_selectedDevice as CardReader);
-                    break;
-            }
-
-            Helper.PrintDeviceDeletedFromSectionMessage(_selectedDevice, _selectedSection);
-            _selectedDevice = null;
-        }
-        */
-
-        #region GetMethods
-        /*// Returns Device object or null if not found
-        private static Device GetDevice()
-        {
-            var (type, name) = GetDeviceTypeAndName();
-            return _selectedSection.FindDeviceByName(name);
-        }
-        
-        // TODO CHECK WRONG INPUT
-        // Asks user to type DeviceType and name -> parses the type into correct enum, returns tuple
-        private static (DeviceTypes, string) GetDeviceTypeAndName()
-        {
-            Console.WriteLine("What device (CardReader/Door/LedPanel/Speaker) and name? Ex.: 'Door MainDoor'");
-            var ln = Console.ReadLine()?.Trim().Split(' ');
-            string name = null;
-            if (ln?.Length == 2)
-            {
-                name = ln[1];
-            }
-
-            Enum.TryParse(ln?[0], out DeviceTypes type);
-            return (type, name);
-        }
-        */
-        /*
-        // Asks user to type section -> returns Section object or null if not found
-        private static Section GetSection()
-        {
-            Console.WriteLine("Please enter section name...");
-            var section = Console.ReadLine();
-            return Building.Sections.FirstOrDefault(x => x.Name == section);
-        }
-        */
 
         private static Section GetSectionByName(string sectionName)
         {
             return Building.Sections.FirstOrDefault(section => section.Name == sectionName);
         }
+
 
         private static Device GetDevice(string identificator)
         {
@@ -614,7 +504,7 @@ namespace BuildingManager
                  ? Building.GetDeviceById(id)
                  : Building.GetDeviceByName(identificator);
         }
-        #endregion
+
 
         private static bool RemoveDevice(string identificator)
         {
