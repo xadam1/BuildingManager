@@ -97,43 +97,47 @@ namespace BuildingManager
             Console.WriteLine("*Command Overview*");
             Console.ResetColor();
 
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine("Overall commands");
+            Console.ForegroundColor = ConsoleColor.Black;
             PrintCommand("'exit'", "Terminates the application");
             PrintCommand("'help'/'h'", "Displays this help table");
-            PrintCommand("'building plan'/'plan'", "Displays plan of the whole building, Sections and Devices included");
-            Console.WriteLine();
+            PrintCommand("'building'/'plan'", "Displays plan of the whole building, Sections and Devices included");
 
-            PrintCommand("'section'", "Displays currently selected SECTION");
-            PrintCommand("'select section'", "Select another SECTION");
-            PrintCommand("'new section'", "Creates new section");
-            PrintCommand("'section info'", "Displays info about selected section");
-            PrintCommand("'rename section'", "Sets new name for selected section");
-            PrintCommand("'delete section'", "Removes selected section");
-            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine("Section Commands");
+            Console.ForegroundColor = ConsoleColor.Black;
+            PrintCommand("'add section [name]'", "Creates new section");
+            PrintCommand("'info section [name]'", "Displays info about section");
+            PrintCommand("'rename section [name] [new name]'", "Sets new name for section");
+            PrintCommand("'delete section [name]'", "Removes section");
 
-            PrintCommand("'device'", "Displays currently selected DEVICE");
-            PrintCommand("'select device'", "Select another DEVICE");
-            PrintCommand("'new device'", "Creates new device in CURRENT SECTION");
-            PrintCommand("'device info'", "Displays info about selected device");
-            PrintCommand("'rename device'", "Sets new name for selected device");
-            PrintCommand("'delete device'/'delete'", "Removes selected device");
-            PrintCommand("'move device'/'move'", "Moves selected device to another section");
-            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine("Device Commands");
+            Console.ForegroundColor = ConsoleColor.Black;
+            PrintCommand("'add device [section name] [device name]'", "Creates new device in section");
+            PrintCommand("'info device [name/id]'", "Displays info about device");
+            PrintCommand("'rename device [name/id] [new name]'", "Sets new name for device");
+            PrintCommand("'delete device [name/id]'", "Removes selected device");
+            PrintCommand("'move [name/id] [new section]'/'mv'", "Moves selected device to another section");
 
-            PrintCommand("'change text'", "If LedPanel is selected change the Message");
-            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine("Change Command");
+            Console.ForegroundColor = ConsoleColor.Black;
+            PrintCommand("'change access [name/id] [new access number]'", "Sets new AccessCard Number to CardReader");
+            PrintCommand("'change volume [name/id] [new value]'", "Sets new (float) volume value for the Speaker");
+            PrintCommand("'change sound [name/id] [Alarm/Music/None]'", "Sets what will speaker play");
+            PrintCommand("'change text [name/id] [new text]'", "Sets new Message for the LedPanel");
 
-            PrintCommand("'open door'/'open'", "If Door is selected sets state to Open");
-            PrintCommand("'lock door'/'lock'", "If Door is selected sets state to Locked");
-            PrintCommand("'opentoolong door'/'toolong'", "If Door is selected sets state to OpenForTooLong");
-            PrintCommand("'openforcibly door'/'forcibly'", "If Door is selected sets state to OpenedForcibly");
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine("Set Command");
+            Console.ForegroundColor = ConsoleColor.Black;
+            PrintCommand("'set/door [name/id] [Open]'", "Toggles door's OPEN state");
+            PrintCommand("'set/door [name/id] [Lock]'", "Toggles door's LOCK state");
+            PrintCommand("'set/door [name/id] [openedforcibly/force]'", "Toggles door's OpenedForcibly state");
+            PrintCommand("'set/door [name/id] [openfortoolong/toolong/long]'", "Toggles door's OpenForTooLong state");
             Console.WriteLine();
-
-            PrintCommand("'change volume'/'volume'", "If Speaker is selected sets volume");
-            PrintCommand("'change sound'/'sound'", "If Speaker is selected select what should play at the speaker");
-            Console.WriteLine();
-
-            PrintCommand("'change access'/'access'", "If CardReader is selected set new 'AccessCardNumber'");
-            Console.WriteLine();
+            Console.ResetColor();
         }
 
         private static void PrintCommand(string command, string description)
