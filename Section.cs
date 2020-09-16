@@ -82,70 +82,50 @@ namespace BuildingManager
         {
             var sb = new StringBuilder();
 
-            var cardReaders = new List<Device>();
-            var doors = new List<Device>();
-            var speakers = new List<Device>();
-            var ledPanels = new List<Device>();
-
-            foreach (var device in Devices)
-            {
-                switch (device.Type)
-                {
-                    case DeviceTypes.CardReader:
-                        cardReaders.Add(device);
-                        break;
-                    case DeviceTypes.Door:
-                        doors.Add(device);
-                        break;
-                    case DeviceTypes.Speaker:
-                        speakers.Add(device);
-                        break;
-                    case DeviceTypes.LedPanel:
-                        ledPanels.Add(device);
-                        break;
-                }
-            }
-
-            if (cardReaders.Count != 0)
+            // Check if Devices contains any CardReaders
+            if (Devices.Any(x => x.Type == DeviceTypes.CardReader))
             {
                 sb.AppendLine("CardReaders:");
-                foreach (var cardReader in cardReaders)
+                foreach (var cardReader in Devices.Where(x => x.Type == DeviceTypes.CardReader).ToList())
                 {
                     sb.Append($"{cardReader.Name} ");
                 }
                 sb.AppendLine("\n");
             }
 
-            if (doors.Count != 0)
+            // Contains Doors?
+            if (Devices.Any(x => x.Type == DeviceTypes.Door))
             {
                 sb.AppendLine("Doors:");
-                foreach (var door in doors)
+                foreach (var door in Devices.Where(x => x.Type == DeviceTypes.Door).ToList())
                 {
                     sb.Append($"{door.Name} ");
                 }
                 sb.AppendLine("\n");
             }
 
-            if (ledPanels.Count != 0)
+            // Contains LedPanel?
+            if (Devices.Any(x => x.Type == DeviceTypes.LedPanel))
             {
                 sb.AppendLine("LedPanels:");
-                foreach (var ledPanel in ledPanels)
+                foreach (var ledPanel in Devices.Where(x => x.Type == DeviceTypes.LedPanel).ToList())
                 {
                     sb.Append($"{ledPanel.Name} ");
                 }
                 sb.AppendLine("\n");
             }
 
-            if (speakers.Count != 0)
+            // Contains Speakers?
+            if (Devices.Any(x => x.Type == DeviceTypes.Speaker))
             {
                 sb.AppendLine("Speakers:");
-                foreach (var speaker in speakers)
+                foreach (var speaker in Devices.Where(x => x.Type == DeviceTypes.Speaker).ToList())
                 {
                     sb.Append($"{speaker.Name} ");
                 }
-                sb.AppendLine("\n");
             }
 
+            // Return trimmed version
             return sb.ToString().TrimEnd();
         }
 
