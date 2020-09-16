@@ -18,6 +18,7 @@ namespace BuildingManager
         public Section(string name)
         {
             Name = name;
+            SectionModified += Helper.OnSectionModified;
         }
 
         public string Name
@@ -59,9 +60,6 @@ namespace BuildingManager
                 default:
                     return;
             }
-
-            device.DeviceModified += Helper.OnDeviceModified;
-            device.DeviceError += Helper.OnDeviceError;
             OnSectionModified();
         }
 
@@ -83,7 +81,7 @@ namespace BuildingManager
         // Category is omitted if no device is in given category
         public string ListDevices()
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             var cardReaders = new List<Device>();
             var doors = new List<Device>();
@@ -155,7 +153,11 @@ namespace BuildingManager
 
         protected void OnSectionModified()
         {
-            SectionModified?.Invoke(this, EventArgs.Empty);
+            var args = new BuildingPartModifiedEventArgs()
+            {
+                Section = this,
+            };
+            SectionModified?.Invoke(args);
         }
     }
 }

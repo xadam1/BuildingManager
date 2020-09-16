@@ -22,6 +22,9 @@ namespace BuildingManager.Devices
                 name = type.ToString();
             }
             Name = name;
+
+            DeviceModified += Helper.OnDeviceModified;
+            DeviceError += Helper.OnDeviceError;
         }
 
         public DeviceTypes Type { get; }

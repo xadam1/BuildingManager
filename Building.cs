@@ -18,7 +18,7 @@ namespace BuildingManager
         {
             DeviceRemoved += Helper.OnDeviceRemoved;
             DeviceMoved += Helper.OnDeviceMoved;
-            SectionRemoved += Helper.OnDeviceRemoved;
+            SectionRemoved += Helper.OnSectionRemoved;
         }
 
 
@@ -29,7 +29,6 @@ namespace BuildingManager
         {
             var section = new Section(name);
             Sections.Add(section);
-            section.SectionModified += Helper.OnSectionModified;
             BuildingPlan();
         }
 
@@ -138,6 +137,7 @@ namespace BuildingManager
             return true;
         }
 
+        #region EventInvokers
         protected void OnSectionRemoved(Section section)
         {
             var args = new BuildingPartModifiedEventArgs()
@@ -158,16 +158,17 @@ namespace BuildingManager
             DeviceRemoved?.Invoke(args);
         }
 
-        protected virtual void OnDeviceMoved(Device device, Section oldSection, Section newSection)
+        protected void OnDeviceMoved(Device device, Section oldSection, Section newSection)
         {
             var args = new BuildingPartModifiedEventArgs()
             {
                 Building = this,
                 Device = device,
-                currentDeviceSection = newSection,
-                oldDeviceSection = oldSection
+                CurrentDeviceSection = newSection,
+                OldDeviceSection = oldSection
             };
             DeviceMoved?.Invoke(args);
         }
+        #endregion
     }
 }

@@ -54,7 +54,7 @@ namespace BuildingManager
         public static void OnDeviceMoved(BuildingPartModifiedEventArgs args)
         {
             args.Building.BuildingPlan();
-            PrintDeviceMoved(args.Device, args.oldDeviceSection, args.currentDeviceSection);
+            PrintDeviceMoved(args.Device, args.OldDeviceSection, args.CurrentDeviceSection);
         }
         #endregion
 

@@ -7,7 +7,7 @@
 
         public Speaker(string name) : base(DeviceTypes.Speaker, name ?? "Speaker")
         {
-            Sound = SoundOptions.None;
+            _sound = SoundOptions.None;
         }
 
         public SoundOptions Sound
@@ -35,30 +35,9 @@
             }
         }
 
-        /*
-        // Methods to change Sound
-        public void PlayMusic()
-        {
-            Sound = SoundOptions.Music;
-            OnDeviceModified();
-        }
-
-        public void PlayAlarm()
-        {
-            Sound = SoundOptions.Alarm;
-            OnDeviceModified();
-        }
-
-        public void StopPlaying()
-        {
-            Sound = SoundOptions.None;
-            OnDeviceModified();
-        }
-        */
-
         public override string GetCurrentState()
             => base.GetCurrentState() + $"\nPlaying: {Sound}\nVolume: {Volume}";
-    
+
         public enum SoundOptions
         {
             None,

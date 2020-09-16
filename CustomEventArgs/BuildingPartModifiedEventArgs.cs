@@ -1,4 +1,5 @@
 ﻿using System;
+using BuildingManager.Devices;
 
 namespace BuildingManager.CustomEventArgs
 {
@@ -6,9 +7,9 @@ namespace BuildingManager.CustomEventArgs
     {
         public Building Building { get; set; }  
         public Section Section { get; set; }
-        public Devices.Device Device { get; set; }
+        public Device Device { get; set; }
 
-        public Section currentDeviceSection { get; set; }
-        public Section oldDeviceSection { get; set; }
+        public Section CurrentDeviceSection { get; set; }
+        public Section OldDeviceSection { get; set; }
     }
 }
