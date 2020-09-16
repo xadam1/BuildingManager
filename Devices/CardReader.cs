@@ -21,7 +21,6 @@ namespace BuildingManager.Devices
                     OnDeviceError("Card Number is not valid!");
                     return;
                 }
-
                 _accessCardNumber = ReverseBytesAndPad(value);
                 OnDeviceModified();
             }
@@ -42,10 +41,8 @@ namespace BuildingManager.Devices
                 sb.Append(input[i - 1]);
                 sb.Append(input[i]);
             }
-
             return sb.ToString().PadLeft(16, '0');
         }
-
 
         public override string GetCurrentState() =>
             base.GetCurrentState() + $"\nAccess Number: {AccessCardNumber}";

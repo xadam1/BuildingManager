@@ -1,6 +1,6 @@
 ﻿namespace BuildingManager.Devices
 {
-    // Represents possible devices
+    // Represents Different Device Types
     public enum DeviceTypes
     {
         LedPanel,

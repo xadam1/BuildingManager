@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 
 namespace BuildingManager.Devices
 {
@@ -8,14 +9,7 @@ namespace BuildingManager.Devices
         {
         }
 
-        public override string GetCurrentState()
-        {
-            return base.GetCurrentState() + $"\nState: {State}";
-        }
-
-
         public DoorStates State { get; set; } = DoorStates.Locked;
-
 
         public bool Open
         {
@@ -85,6 +79,25 @@ namespace BuildingManager.Devices
             }
         }
 
+        public override string GetCurrentState()
+        {
+            var sb = new StringBuilder();
+            sb.Append("\nState: ");
+
+            if ((State & DoorStates.Locked) != 0)
+            { sb.Append("Locked "); }
+
+            if ((State & DoorStates.Open) != 0)
+            { sb.Append("Open "); }
+
+            if ((State & DoorStates.OpenedForcibly) != 0)
+            { sb.Append("OpenedForcibly "); }
+
+            if ((State & DoorStates.OpenForTooLong) != 0)
+            { sb.Append("OpenForTooLong"); }
+
+            return base.GetCurrentState() + sb.ToString();
+        }
 
         [Flags]
         public enum DoorStates

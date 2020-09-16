@@ -11,8 +11,7 @@ namespace BuildingManager
     {
         private string _name;
 
-        public delegate void SectionModifiedEventHandler(BuildingPartModifiedEventArgs args);
-        public event SectionModifiedEventHandler SectionModified;
+        public event Building.BuildingPartModifiedEventHandler SectionModified;
 
 
         public Section(string name)

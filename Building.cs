@@ -21,7 +21,6 @@ namespace BuildingManager
             SectionRemoved += Helper.OnSectionRemoved;
         }
 
-
         public List<Section> Sections { get; set; } = new List<Section>();
 
 
@@ -55,20 +54,19 @@ namespace BuildingManager
                 .FirstOrDefault(res => res != null);
         }
 
-
+        // Removes section from building
         public bool RemoveSection(string name)
         {
             var section = Sections.FirstOrDefault(x => x.Name == name);
             if (section is null)
-            {
-                return false;
-            }
+            { return false; }
 
             Sections.Remove(section);
             OnSectionRemoved(section);
             return true;
         }
 
+        // Remove device by ID
         public bool RemoveDevice(int id)
         {
             foreach (var section in Sections)
@@ -83,6 +81,7 @@ namespace BuildingManager
             return false;
         }
 
+        // Remove device by NAME
         public bool RemoveDevice(string name)
         {
             foreach (var section in Sections)

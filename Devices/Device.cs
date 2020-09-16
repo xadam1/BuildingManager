@@ -8,11 +8,9 @@ namespace BuildingManager.Devices
     {
         private string _name;
 
-        public delegate void OnDeviceModifiedEventHandler(BuildingPartModifiedEventArgs args);
-        public event OnDeviceModifiedEventHandler DeviceModified;
-
         public delegate void OnDeviceErrorEventHandler(Device device, ErrorEventArgs args);
         public event OnDeviceErrorEventHandler DeviceError;
+        public event Building.BuildingPartModifiedEventHandler DeviceModified;
 
         public Device(DeviceTypes type, string name)
         {
@@ -27,10 +25,10 @@ namespace BuildingManager.Devices
             DeviceError += Helper.OnDeviceError;
         }
 
-        public DeviceTypes Type { get; }
-
         public int Id { get; } = Helper.CalculateNewId();
 
+        public DeviceTypes Type { get; }
+        
         public string Name
         {
             get => _name;
@@ -46,7 +44,7 @@ namespace BuildingManager.Devices
             return $"Type:\t{Type}\nName:\t{Name}\nID:\t{Id}";
         }
 
-
+        #region EventInvokers
         protected void OnDeviceModified()
         {
             var args = new BuildingPartModifiedEventArgs()
@@ -61,5 +59,6 @@ namespace BuildingManager.Devices
             var exception = new Exception(message);
             DeviceError?.Invoke(this, new ErrorEventArgs(exception));
         }
+        #endregion
     }
 }

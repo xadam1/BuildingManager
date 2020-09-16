@@ -203,11 +203,11 @@ namespace BuildingManager
                                 break;
                         }
                         break;
-
+                    
                     // Display info about section or device
                     case "info":
                     case "Info":
-                        if (CheckNumberOfArgs(commands, 3))
+                        if (!CheckNumberOfArgs(commands, 3))
                         { continue; }
 
                         switch (commands[1])
@@ -382,6 +382,10 @@ namespace BuildingManager
                                     (targetDevice as LedPanel).Message = commands[3];
                                 }
                                 break;
+                            
+                            default:
+                                Helper.PrintError($"Unknown Element to be Changed: {commands[1]}");
+                                break;
                         }
                         break;
 
@@ -397,7 +401,7 @@ namespace BuildingManager
                         var door = GetDevice(commands[1]);
                         if (door is null)
                         {
-                            Helper.PrintError("Door could not be found.");
+                            Helper.PrintError($"Door '{commands[1]}' could not be found.");
                             continue;
                         }
 
@@ -431,6 +435,10 @@ namespace BuildingManager
                             case "opentoolong":
                             case "openlong":
                                 (door as Door).OpenForTooLong = !(door as Door).OpenForTooLong;
+                                break;
+
+                            default:
+                                Helper.PrintError($"Unknown State: {commands[2]}");
                                 break;
                         }
                         break;
