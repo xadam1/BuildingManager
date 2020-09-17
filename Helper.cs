@@ -186,7 +186,7 @@ namespace BuildingManager
         {
             Console.BackgroundColor = ConsoleColor.DarkYellow;
             Console.ForegroundColor = ConsoleColor.Black;
-            Console.WriteLine($"Device moved: {device.Name}\nFrom: {previousSection.Name}\nTo: {newSection.Name}");
+            Console.WriteLine($"Device moved: {device.Name} (ID: {device.Id})\nFrom: {previousSection.Name}\nTo: {newSection.Name}");
             Console.ResetColor();
             PrintSectionInfo(newSection);
         }

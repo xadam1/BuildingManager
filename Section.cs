@@ -16,7 +16,7 @@ namespace BuildingManager
 
         public Section(string name)
         {
-            Name = name;
+            _name = name;
             SectionModified += Helper.OnSectionModified;
         }
 
@@ -88,7 +88,7 @@ namespace BuildingManager
                 sb.AppendLine("CardReaders:");
                 foreach (var cardReader in Devices.Where(x => x.Type == DeviceTypes.CardReader).ToList())
                 {
-                    sb.Append($"{cardReader.Name} ");
+                    sb.Append($"{cardReader.Name}(ID: {cardReader.Id}) ");
                 }
                 sb.AppendLine("\n");
             }
@@ -99,7 +99,7 @@ namespace BuildingManager
                 sb.AppendLine("Doors:");
                 foreach (var door in Devices.Where(x => x.Type == DeviceTypes.Door).ToList())
                 {
-                    sb.Append($"{door.Name} ");
+                    sb.Append($"{door.Name}(ID: {door.Id}) ");
                 }
                 sb.AppendLine("\n");
             }
@@ -110,7 +110,7 @@ namespace BuildingManager
                 sb.AppendLine("LedPanels:");
                 foreach (var ledPanel in Devices.Where(x => x.Type == DeviceTypes.LedPanel).ToList())
                 {
-                    sb.Append($"{ledPanel.Name} ");
+                    sb.Append($"{ledPanel.Name}(ID: {ledPanel.Id}) ");
                 }
                 sb.AppendLine("\n");
             }
@@ -121,7 +121,7 @@ namespace BuildingManager
                 sb.AppendLine("Speakers:");
                 foreach (var speaker in Devices.Where(x => x.Type == DeviceTypes.Speaker).ToList())
                 {
-                    sb.Append($"{speaker.Name} ");
+                    sb.Append($"{speaker.Name}(ID: {speaker.Id}) ");
                 }
             }
 

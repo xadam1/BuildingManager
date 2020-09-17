@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BuildingManager.Devices;
 
@@ -8,115 +9,61 @@ namespace BuildingManager
     {
         private static readonly Building Building = new Building();
 
-
         #region Initialization
         // Simply populate building with some data
         private static void PopulateBuilding()
-        {/*
+        {
             // SectionA
             var sectionA = new Section("SectionA");
-            sectionA.DeviceAdded += Helper.OnSectionModified;
-            sectionA.SectionRenamed += Helper.OnSectionModified;
-            sectionA.CardReaders.AddRange(new List<CardReader>()
+            sectionA.Devices.AddRange(new List<Device>()
             {
                 new CardReader("MainDoorReader"),
                 new CardReader("CaffeeCardReader"),
-                new CardReader("FrontGateReader")
-            });
-            foreach (var aCard in sectionA.CardReaders)
-            {
-                aCard.CardReaderModified += Helper.OnDeviceModified;
-                aCard.DeviceRenamed += Helper.OnDeviceModified;
-            }
-
-            sectionA.Speakers.AddRange(new List<Speaker>()
-            {
+                new CardReader("FrontGateReader"),
                 new Speaker("Subwoofer"),
                 new Speaker("FrontSpeaker"),
                 new Speaker("SideSpeakerLeft"),
                 new Speaker("SideSpeakerRight"),
                 new Speaker("RareSpeaker")
             });
-            foreach (var aSpeaker in sectionA.Speakers)
-            {
-                aSpeaker.SpeakerModified += Helper.OnDeviceModified;
-                aSpeaker.DeviceRenamed += Helper.OnDeviceModified;
-            }
 
             // SectionB
             var sectionB = new Section("SectionB");
-            sectionB.DeviceAdded += Helper.OnSectionModified;
-            sectionB.SectionRenamed += Helper.OnSectionModified;
-            sectionB.Doors.AddRange(new List<Door>()
+            sectionB.Devices.AddRange(new List<Device>()
             {
                 new Door("FrontGate"),
                 new Door("CanteenDoor"),
-                new Door("BackDoor")
-            });
-            foreach (var bDoor in sectionB.Doors)
-            {
-                bDoor.DoorModified += Helper.OnDeviceModified;
-                bDoor.DeviceRenamed += Helper.OnDeviceModified;
-            }
-
-
-            sectionB.LedPanels.AddRange(new List<LedPanel>()
-            {
+                new Door("BackDoor"),
                 new LedPanel("FrontGateLabel"),
-                new LedPanel("HallPanel")
-            });
-            foreach (var bPanel in sectionB.LedPanels)
-            {
-                bPanel.LedPanelModified += Helper.OnDeviceModified;
-                bPanel.DeviceRenamed += Helper.OnDeviceModified;
-            }
-
-            sectionB.CardReaders.AddRange(new List<CardReader>()
-            {
+                new LedPanel("HallPanel"),
                 new CardReader("FrontGateCardReader"),
                 new CardReader("HeadmasterDoorReader")
             });
-            foreach (var bCard in sectionB.CardReaders)
-            {
-                bCard.CardReaderModified += Helper.OnDeviceModified;
-                bCard.DeviceRenamed += Helper.OnDeviceModified;
-            }
 
             Building.Sections.Add(sectionA);
             Building.Sections.Add(sectionB);
-            */
         }
 
         // Does some initial moving, renaming, deleting, etc...
         private static void PerformSomeOperations()
         {
-            /*
             // MOVE DEVICE TO ANOTHER LOCATION
             Console.WriteLine("Moving 'Subwoofer' from 'SectionA' -> 'SectionB'");
-            _selectedSection = Building.Sections.Single(sec => sec.Name == "SectionA");
-            _selectedDevice = _selectedSection.FindDeviceByName("Subwoofer");
-            MoveDeviceToAnotherSection(Building.Sections.Single(sec => sec.Name == "SectionB"));
+            Building.MoveDevice("Subwoofer", GetSectionByName("SectionB"));
 
             // RENAME SECTION
             Console.WriteLine("Renaming section 'SectionA' -> 'MainSection'");
-            _selectedSection.Name = "MainSection";
+            GetSectionByName("SectionA").Name = "MainSection";
 
             // Change Access Number
             Console.WriteLine("Changing AccessNumber at 'MainDoorReader' -> 'A01234DE7FFF'");
-            _selectedDevice = _selectedSection.FindDeviceByName("MainDoorReader");
-            ((CardReader)_selectedDevice).AccessCardNumber = "A01234DE7FFF";
+            ((CardReader)GetDevice("MainDoorReader")).AccessCardNumber = "A01234DE7FFF";
 
             // Delete device
             Console.WriteLine("Deleting 'RareSpeaker' from 'MainSection'");
-            _selectedSection = Building.Sections.Single(sec => sec.Name == "MainSection");
-            _selectedDevice = _selectedSection.FindDeviceByName("RareSpeaker");
-            RemoveSelectedDeviceFromSelectedSection();
+            GetSectionByName("MainSection").RemoveDevice(GetDevice("RareSpeaker"));
 
             Console.WriteLine("INITIALIZATION DONE!\n\n");
-
-            _selectedSection = null;
-            _selectedDevice = null;
-            */
         }
         #endregion
 
@@ -174,7 +121,7 @@ namespace BuildingManager
                                 // If user input contains name for new device use it, default otherwise
                                 if (commands.Length == 5)
                                 { deviceName = commands[4]; }
-                                
+
                                 if (!Enum.TryParse(deviceType, out DeviceTypes type))
                                 {
                                     Helper.PrintError("Device type not recognized.");
@@ -203,7 +150,7 @@ namespace BuildingManager
                                 break;
                         }
                         break;
-                    
+
                     // Display info about section or device
                     case "info":
                     case "Info":
@@ -292,7 +239,7 @@ namespace BuildingManager
                         }
                         break;
 
-                    // Move 
+                    // Moving device into new section 
                     case "mv":
                     case "Mv":
                     case "move":
@@ -379,17 +326,19 @@ namespace BuildingManager
                             case "Text":
                                 if (IsDeviceTypeMatch(targetDevice, DeviceTypes.LedPanel))
                                 {
-                                    (targetDevice as LedPanel).Message = commands[3];
+                                    // commands are split by ' ', so we join the rest back together
+                                    var msg = string.Join(" ", commands, 3, commands.Length - 3);
+                                    (targetDevice as LedPanel).Message = msg;
                                 }
                                 break;
-                            
+
                             default:
                                 Helper.PrintError($"Unknown Element to be Changed: {commands[1]}");
                                 break;
                         }
                         break;
 
-                    // set MainDoor open
+                    // DOOR STATE MANIPULATION
                     case "setdoor":
                     case "setDoor":
                     case "SetDoor":
@@ -450,6 +399,14 @@ namespace BuildingManager
                 }
             }
         }
+        
+        // In order to not specify section, user just locates wanted device via ID or name
+        private static bool RemoveDevice(string identificator)
+        {
+            return int.TryParse(identificator, out var id)
+                ? Building.RemoveDevice(id)
+                : Building.RemoveDevice(identificator);
+        }
 
 
         // Checks if 'device' is of type 'desiredDeviceType', return true if yes,
@@ -475,25 +432,16 @@ namespace BuildingManager
         }
 
 
-        private static Section GetSectionByName(string sectionName)
-        {
-            return Building.Sections.FirstOrDefault(section => section.Name == sectionName);
-        }
+        // Returns Section object which corresponds to the name, null if not found
+        private static Section GetSectionByName(string sectionName) => 
+            Building.Sections.FirstOrDefault(section => section.Name == sectionName);
 
-
+        // Returns Device object, which is found either via ID or NAME, null otherwise
         private static Device GetDevice(string identificator)
         {
             return int.TryParse(identificator, out var id)
-                 ? Building.GetDeviceById(id)
-                 : Building.GetDeviceByName(identificator);
-        }
-
-
-        private static bool RemoveDevice(string identificator)
-        {
-            return int.TryParse(identificator, out var id)
-                ? Building.RemoveDevice(id)
-                : Building.RemoveDevice(identificator);
+                ? Building.GetDeviceById(id)
+                : Building.GetDeviceByName(identificator);
         }
     }
 }
