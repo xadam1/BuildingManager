@@ -23,7 +23,7 @@ namespace BuildingManager
 
         public List<Section> Sections { get; set; } = new List<Section>();
 
-
+        // Adds new section and draws BuildingPlan, because tree was modified
         public void AddSection(string name)
         {
             var section = new Section(name);
@@ -40,7 +40,8 @@ namespace BuildingManager
             }
         }
 
-        // Loops through all Sections and if matching ID is found returns that device, null otherwise
+        // Loops through all Sections and if device with matching ID is found returns that device
+        // null otherwise
         public Devices.Device GetDeviceById(int id)
         {
             return Sections.Select(section => section.FindDeviceById(id))

@@ -79,6 +79,8 @@ namespace BuildingManager.Devices
             }
         }
 
+
+        // Determines which states are enabled on current door and appends them into description
         public override string GetCurrentState()
         {
             var sb = new StringBuilder();
@@ -99,6 +101,8 @@ namespace BuildingManager.Devices
             return base.GetCurrentState() + sb.ToString();
         }
 
+        // These are the values State can have, it's possible to have non-logical combination enabled
+        // Ex. 'Open' & 'Locked'
         [Flags]
         public enum DoorStates
         {

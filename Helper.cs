@@ -9,46 +9,25 @@ namespace BuildingManager
     {
         private static int _idCounter;
 
+        public static int CalculateNewId() => _idCounter++;
+
         #region EventHandlers
-        public static void OnDeviceModified(BuildingPartModifiedEventArgs args)
-        {
-            var device = args.Device;
-            switch (device.Type)
-            {
-                case DeviceTypes.Door:
-                    PrintDeviceInfo(device as Door);
-                    break;
-                case DeviceTypes.Speaker:
-                    PrintDeviceInfo(device as Speaker);
-                    break;
-                case DeviceTypes.LedPanel:
-                    PrintDeviceInfo(device as LedPanel);
-                    break;
-                case DeviceTypes.CardReader:
-                    PrintDeviceInfo(device as CardReader);
-                    break;
-            }
-        }
+        public static void OnDeviceModified(BuildingPartModifiedEventArgs args) =>
+            PrintDeviceInfo(args.Device);
 
-        public static void OnDeviceError(Device device, ErrorEventArgs e)
-        {
-            PrintError(e.GetException().Message);
-        }
-
-        public static void OnSectionModified(BuildingPartModifiedEventArgs args)
-        {
+        public static void OnSectionModified(BuildingPartModifiedEventArgs args) =>
             PrintSectionInfo(args.Section);
-        }
+
+        public static void OnDeviceError(Device device, ErrorEventArgs e) =>
+            PrintError(e.GetException().Message);
+
+        public static void OnDeviceRemoved(BuildingPartModifiedEventArgs args) =>
+            PrintDeviceDeletedFromSectionMessage(args.Device, args.Section);
 
         public static void OnSectionRemoved(BuildingPartModifiedEventArgs args)
         {
             args.Building.BuildingPlan();
             PrintSectionDeleted(args.Section);
-        }
-
-        public static void OnDeviceRemoved(BuildingPartModifiedEventArgs args)
-        {
-            PrintDeviceDeletedFromSectionMessage(args.Device, args.Section);
         }
 
         public static void OnDeviceMoved(BuildingPartModifiedEventArgs args)
@@ -58,7 +37,14 @@ namespace BuildingManager
         }
         #endregion
 
-        public static int CalculateNewId() => _idCounter++;
+
+        #region GeneralPrints
+        public static void PrintError(string msg)
+        {
+            Console.BackgroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine($"ERROR: {msg}");
+            Console.ResetColor();
+        }
 
         public static void Greetings()
         {
@@ -68,43 +54,22 @@ namespace BuildingManager
             Console.ResetColor();
         }
 
-        public static void PrintError(string msg)
-        {
-            Console.BackgroundColor = ConsoleColor.DarkRed;
-            Console.WriteLine($"ERROR: {msg}");
-            Console.ResetColor();
-        }
-
-        public static void PrintDeviceInfo(Device device)
-        {
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"\n---------- {device.Type} Info ----------");
-            Console.ResetColor();
-
-            Console.WriteLine(device.GetCurrentState());
-
-            Console.ForegroundColor = ConsoleColor.Green;
-            // 27 => 10x '-' then 'Info' and 10x '-' + 3x ' '
-            Console.WriteLine(new string('-', 27 + device.Type.ToString().Length));
-            Console.ResetColor();
-            Console.WriteLine();
-        }
 
         public static void PrintHelp()
         {
             Console.BackgroundColor = ConsoleColor.Gray;
             Console.ForegroundColor = ConsoleColor.Black;
-            Console.WriteLine("*Command Overview*");
+            Console.WriteLine("*COMMAND OVERVIEW*");
             Console.ResetColor();
 
-            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine("Overall commands");
             Console.ForegroundColor = ConsoleColor.Black;
             PrintCommand("'exit'", "Terminates the application");
             PrintCommand("'help'/'h'", "Displays this help table");
             PrintCommand("'building'/'plan'", "Displays plan of the whole building, Sections and Devices included");
 
-            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine("Section Commands");
             Console.ForegroundColor = ConsoleColor.Black;
             PrintCommand("'add section [name]'", "Creates new section");
@@ -112,7 +77,7 @@ namespace BuildingManager
             PrintCommand("'rename section [name] [new name]'", "Sets new name for section");
             PrintCommand("'delete section [name]'", "Removes section");
 
-            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine("Device Commands");
             Console.ForegroundColor = ConsoleColor.Black;
             PrintCommand("'add device [section name] [device name]'", "Creates new device in section");
@@ -121,7 +86,7 @@ namespace BuildingManager
             PrintCommand("'delete device [name/id]'", "Removes selected device");
             PrintCommand("'move [name/id] [new section]'/'mv'", "Moves selected device to another section");
 
-            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine("Change Command");
             Console.ForegroundColor = ConsoleColor.Black;
             PrintCommand("'change access [name/id] [new access number]'", "Sets new AccessCard Number to CardReader");
@@ -129,7 +94,7 @@ namespace BuildingManager
             PrintCommand("'change sound [name/id] [Alarm/Music/None]'", "Sets what will speaker play");
             PrintCommand("'change text [name/id] [new text]'", "Sets new Message for the LedPanel");
 
-            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine("Set Command");
             Console.ForegroundColor = ConsoleColor.Black;
             PrintCommand("'set/door [name/id] [Open]'", "Toggles door's OPEN state");
@@ -148,6 +113,24 @@ namespace BuildingManager
             Console.ResetColor();
             Console.Write(" - ");
             Console.WriteLine(description);
+        }
+        #endregion
+
+
+        #region InfoAndMessages
+        public static void PrintDeviceInfo(Device device)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"\n---------- {device.Type} Info ----------");
+            Console.ResetColor();
+
+            Console.WriteLine(device.GetCurrentState());
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            // 27 => 10x '-' then 'Info' and 10x '-' + 3x ' '
+            Console.WriteLine(new string('-', 27 + device.Type.ToString().Length));
+            Console.ResetColor();
+            Console.WriteLine();
         }
 
         public static void PrintSectionInfo(Section section)
@@ -190,6 +173,6 @@ namespace BuildingManager
             Console.ResetColor();
             PrintSectionInfo(newSection);
         }
+        #endregion
     }
-
 }

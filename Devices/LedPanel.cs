@@ -8,11 +8,6 @@
         {
         }
         
-        public override string GetCurrentState()
-        {
-            return base.GetCurrentState() + $"\nMessage: {Message}";
-        }
-        
         public string Message
         {
             get => _message;
@@ -22,5 +17,8 @@
                 OnDeviceModified();
             }
         }
+
+        public override string GetCurrentState() => 
+            base.GetCurrentState() + $"\nMessage: {Message}";
     }
 }

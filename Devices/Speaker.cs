@@ -35,8 +35,8 @@
             }
         }
 
-        public override string GetCurrentState()
-            => base.GetCurrentState() + $"\nPlaying: {Sound}\nVolume: {Volume}";
+        public override string GetCurrentState() =>
+            base.GetCurrentState() + $"\nPlaying: {Sound}\nVolume: {Volume}";
 
         public enum SoundOptions
         {
